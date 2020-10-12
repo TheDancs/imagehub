@@ -27,6 +27,8 @@ const useStyles = makeStyles((theme) => ({
 export default function AppHeader() {
     const classes = useStyles();
 
+
+
     return (
         <div className={classes.root}>
             <AppBar position="fixed">
@@ -64,7 +66,7 @@ export default function AppHeader() {
                             </IconButton>
                         </Link>
 
-                        <Link to="#">
+                        <Link to="/profile">
                             <IconButton edge="end" aria-label="" color="inherit">
                                 <AccountCircle/>
                             </IconButton>

@@ -1,20 +1,23 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
-import {MainContent} from "./components/main-content";
+import {Route, Switch} from "react-router-dom";
 import {Upload} from "./components/upload";
 import {Feed} from "./components/feed";
+import {Profile} from "./components/profile";
 
 export default function Routes() {
     return (
         <Switch>
             <Route exact path="/">
-                <MainContent />
+                <Profile/>
             </Route>
             <Route exact path="/feed">
-                <Feed />
+                <Feed/>
             </Route>
             <Route exact path="/upload">
-                <Upload />
+                <Upload/>
+            </Route>
+            <Route exact path="/profile">
+                <Profile/>
             </Route>
         </Switch>
     );

@@ -1,10 +1,12 @@
-import React from "react";
-import AppHeader from "./app-bar";
+import React, {useContext} from "react";
+import UserDataContext from "../context/UserDataContext";
 
 export function MainContent() {
+    const userData = useContext(UserDataContext);
+
     return (
         <div>
-            <p className="main--content">Main Content</p>
+            <p className="main--content">Barátok: {userData.friend}!</p>
         </div>
 
     )

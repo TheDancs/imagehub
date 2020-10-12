@@ -27,7 +27,7 @@
 
 .card--login {
     width: 350px;
-    height: 250px;
+    height: 300px;
     padding: 18px 24px;
     margin: 30vh auto 0;
     z-index: 2;
@@ -49,4 +49,8 @@
 #root .MuiAppBar-colorPrimary {
     background-color: white;
     color: black;
+}
+
+.user--data{
+    padding-bottom: 4%;
 }

@@ -5,6 +5,5 @@ export function Feed() {
         <div>
             <p className="main--content">Feed</p>
         </div>
-
     )
 }
