@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="34ce1345-9d92-4a97-b743-2be686381373" name="Default Changelist" comment="New">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/.vs/ImageStoreService/DesignTimeBuild/.dtbcache.v2" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/.vs/ImageStoreService/DesignTimeBuild/.dtbcache.v2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/.vs/ImageStoreService/config/applicationhost.config" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/.vs/ImageStoreService/config/applicationhost.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/.vs/ImageStoreService/v16/.suo" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/.vs/ImageStoreService/v16/.suo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService.UnitTests/obj/ImageStoreService.UnitTests.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService.UnitTests/obj/ImageStoreService.UnitTests.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService.UnitTests/obj/ImageStoreService.UnitTests.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService.UnitTests/obj/ImageStoreService.UnitTests.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService.UnitTests/obj/Release/netcoreapp3.1/ImageStoreService.UnitTests.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService.UnitTests/obj/Release/netcoreapp3.1/ImageStoreService.UnitTests.assets.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService.UnitTests/obj/Release/netcoreapp3.1/ImageStoreService.UnitTests.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService.UnitTests/obj/Release/netcoreapp3.1/ImageStoreService.UnitTests.csprojAssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService.UnitTests/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService.UnitTests/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService.UnitTests/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService.UnitTests/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/ImageStoreService.csproj.user" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/ImageStoreService.csproj.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/bin/Release/netcoreapp3.1/ImageStoreService.deps.json" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/bin/Release/netcoreapp3.1/ImageStoreService.deps.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/bin/Release/netcoreapp3.1/ImageStoreService.dll" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/bin/Release/netcoreapp3.1/ImageStoreService.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/bin/Release/netcoreapp3.1/ImageStoreService.exe" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/bin/Release/netcoreapp3.1/ImageStoreService.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/bin/Release/netcoreapp3.1/ImageStoreService.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/bin/Release/netcoreapp3.1/ImageStoreService.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/bin/Release/netcoreapp3.1/ImageStoreService.runtimeconfig.dev.json" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/bin/Release/netcoreapp3.1/ImageStoreService.runtimeconfig.dev.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/bin/Release/netcoreapp3.1/ImageStoreService.runtimeconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/bin/Release/netcoreapp3.1/ImageStoreService.runtimeconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/ImageStoreService.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/ImageStoreService.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/ImageStoreService.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/ImageStoreService.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.assets.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.csproj.CoreCompileInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.csproj.FileListAbsolute.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.csprojAssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.dll" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.genruntimeconfig.cache" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.genruntimeconfig.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/Release/netcoreapp3.1/ImageStoreService.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/image-hub-backend/ImageStoreService/ImageStoreService/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/logo192.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/logo512.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/robots.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Routes.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/bg.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/menu-logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/paella.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/DropzoneArea.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/alert.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/app-bar.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/feed.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/login.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/login.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/main-content.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/post.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/profile.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/upload.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/context/UserDataContext.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/serviceWorker.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/setupTests.js" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="C:\Users\Developer\AppData\Local\JetBrains\Toolbox\apps\IDEA-U\ch-0\202.7319.50\plugins\maven\lib\maven3" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1ihTdNhG1P9P4hYBvWBikcVIBnn" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/components" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.standard" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.standard" value="" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="ts.external.directory.path" value="C:\Users\Developer\AppData\Local\JetBrains\Toolbox\apps\IDEA-U\ch-0\202.7660.26\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Adam\OE\7. félév\Nagyvállalati szoftverfejlesztés agilis módszertannal\coding\imagehub\src\context" />
+      <recent name="D:\Adam\OE\7. félév\Nagyvállalati szoftverfejlesztés agilis módszertannal\coding\imagehub\src" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Adam\OE\7. félév\Nagyvállalati szoftverfejlesztés agilis módszertannal\coding\imagehub\src\components" />
+      <recent name="D:\Adam\OE\7. félév\Nagyvállalati szoftverfejlesztés agilis módszertannal\coding\imagehub\src\assets\images" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="login.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="login.js" working-dir="$PROJECT_DIR$/src/components">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js.login.js" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="34ce1345-9d92-4a97-b743-2be686381373" name="Default Changelist" comment="" />
+      <created>1602358910960</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1602358910960</updated>
+      <workItem from="1602358912016" duration="599000" />
+      <workItem from="1602359514249" duration="5438000" />
+      <workItem from="1602486195418" duration="11582000" />
+      <workItem from="1602501235888" duration="13009000" />
+    </task>
+    <task id="LOCAL-00001" summary="New">
+      <created>1602509121875</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1602509121875</updated>
+    </task>
+    <task id="LOCAL-00002" summary="New">
+      <created>1602545548245</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1602545548245</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="New" />
+    <option name="LAST_COMMIT_MESSAGE" value="New" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="828" y="412" key="#ESLint" timestamp="1602500547727">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="828" y="412" key="#ESLint/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602500547727" />
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1602539704704">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602539704704" />
+    <state x="2610" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1602489349463">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602489128536" />
+    <state x="2610" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1602489349463" />
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1602546005925">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602546005925" />
+    <state width="1877" height="348" key="GridCell.Tab.0.bottom" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state width="1877" height="348" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1602511875026" />
+    <state width="1877" height="348" key="GridCell.Tab.0.center" timestamp="1602540845768">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845768" />
+    <state width="1877" height="348" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1602511875026" />
+    <state width="1877" height="348" key="GridCell.Tab.0.left" timestamp="1602540845768">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845768" />
+    <state width="1877" height="348" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1602511875026" />
+    <state width="1877" height="348" key="GridCell.Tab.0.right" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state width="1877" height="348" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1602511875026" />
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.1.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.1.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state width="1877" height="348" key="GridCell.Tab.2.bottom" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.2.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state width="1877" height="348" key="GridCell.Tab.2.center" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.2.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state width="1877" height="348" key="GridCell.Tab.2.left" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.2.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state width="1877" height="348" key="GridCell.Tab.2.right" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.2.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state width="1877" height="348" key="GridCell.Tab.3.bottom" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.3.bottom/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state width="1877" height="348" key="GridCell.Tab.3.center" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.3.center/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state width="1877" height="348" key="GridCell.Tab.3.left" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.3.left/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state width="1877" height="348" key="GridCell.Tab.3.right" timestamp="1602540845769">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="348" key="GridCell.Tab.3.right/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602540845769" />
+    <state x="461" y="165" key="SettingsEditor" timestamp="1602505824389">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="461" y="165" key="SettingsEditor/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602505824389" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1602545550624">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602545550624" />
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1602546005915">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602546005915" />
+    <state x="616" y="240" key="run.anything.popup" timestamp="1602505702452">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602505702452" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1602363805374">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1602363805374" />
+  </component>
+</project>
