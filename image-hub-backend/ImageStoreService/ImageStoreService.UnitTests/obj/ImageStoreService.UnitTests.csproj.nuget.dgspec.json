@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Repositories\\image-hub\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService.UnitTests\\ImageStoreService.UnitTests.csproj": {}
+    "O:\\coding\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService.UnitTests\\ImageStoreService.UnitTests.csproj": {}
   },
   "projects": {
-    "D:\\Repositories\\image-hub\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService.UnitTests\\ImageStoreService.UnitTests.csproj": {
+    "O:\\coding\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService.UnitTests\\ImageStoreService.UnitTests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Repositories\\image-hub\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService.UnitTests\\ImageStoreService.UnitTests.csproj",
+        "projectUniqueName": "O:\\coding\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService.UnitTests\\ImageStoreService.UnitTests.csproj",
         "projectName": "ImageStoreService.UnitTests",
-        "projectPath": "D:\\Repositories\\image-hub\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService.UnitTests\\ImageStoreService.UnitTests.csproj",
-        "packagesPath": "C:\\Users\\dfalus\\.nuget\\packages\\",
-        "outputPath": "D:\\Repositories\\image-hub\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService.UnitTests\\obj\\",
+        "projectPath": "O:\\coding\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService.UnitTests\\ImageStoreService.UnitTests.csproj",
+        "packagesPath": "C:\\Users\\Developer\\.nuget\\packages\\",
+        "outputPath": "O:\\coding\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService.UnitTests\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "c:\\program files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\dfalus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Developer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,16 +25,13 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://geomant.pkgs.visualstudio.com/_packaging/BuzzeasyChat/nuget/v3/index.json": {},
-          "https://pkgs.dev.azure.com/geomant/_packaging/Packages/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "netcoreapp3.1": {
-            "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "D:\\Repositories\\image-hub\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService\\ImageStoreService.csproj": {
-                "projectPath": "D:\\Repositories\\image-hub\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService\\ImageStoreService.csproj"
+              "O:\\coding\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService\\ImageStoreService.csproj": {
+                "projectPath": "O:\\coding\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService\\ImageStoreService.csproj"
               }
             }
           }
@@ -44,7 +44,6 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
-          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
@@ -69,12 +68,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.2, 3.1.2]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -83,21 +76,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100-rc.1.20452.10\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "c:\\program files\\dotnet\\sdk\\3.1.202\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Repositories\\image-hub\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService\\ImageStoreService.csproj": {
+    "O:\\coding\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService\\ImageStoreService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Repositories\\image-hub\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService\\ImageStoreService.csproj",
+        "projectUniqueName": "O:\\coding\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService\\ImageStoreService.csproj",
         "projectName": "ImageStoreService",
-        "projectPath": "D:\\Repositories\\image-hub\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService\\ImageStoreService.csproj",
-        "packagesPath": "C:\\Users\\dfalus\\.nuget\\packages\\",
-        "outputPath": "D:\\Repositories\\image-hub\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService\\obj\\",
+        "projectPath": "O:\\coding\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService\\ImageStoreService.csproj",
+        "packagesPath": "C:\\Users\\Developer\\.nuget\\packages\\",
+        "outputPath": "O:\\coding\\imagehub\\image-hub-backend\\ImageStoreService\\ImageStoreService\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "c:\\program files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\dfalus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Developer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -105,13 +101,10 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://geomant.pkgs.visualstudio.com/_packaging/BuzzeasyChat/nuget/v3/index.json": {},
-          "https://pkgs.dev.azure.com/geomant/_packaging/Packages/nuget/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "netcoreapp3.1": {
-            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -123,7 +116,6 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
-          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": {
               "target": "Package",
@@ -148,12 +140,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.2, 3.1.2]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -162,7 +148,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100-rc.1.20452.10\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "c:\\program files\\dotnet\\sdk\\3.1.202\\RuntimeIdentifierGraph.json"
         }
       }
     }
