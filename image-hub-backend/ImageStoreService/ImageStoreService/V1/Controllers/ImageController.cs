@@ -10,7 +10,7 @@ namespace ImageStoreService.V1.Controllers
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    public class ImageController : ControllerBase
+    public class ImageController : Controller
     {
         private readonly IImageStoreService imageStoreService;
 

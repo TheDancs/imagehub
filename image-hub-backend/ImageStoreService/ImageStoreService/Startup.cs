@@ -55,6 +55,8 @@ namespace ImageStoreService
                     options.IncludeXmlComments(XmlCommentsFilePath);
                 });
 
+            services.AddCors();
+
             services.AddSingleton<IImageRepository, InMemoryImageRepo>();
             services.AddScoped<IImageStoreService, Application.ImageStoreService>();
         }
@@ -69,6 +71,8 @@ namespace ImageStoreService
 
             app.UseHttpsRedirection();
 
+            app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
             app.UseRouting();
 
            // app.UseAuthorization();
@@ -77,6 +81,7 @@ namespace ImageStoreService
             {
                 endpoints.MapControllers();
             });
+
 
             app.UseSwagger();
             app.UseSwaggerUI(
