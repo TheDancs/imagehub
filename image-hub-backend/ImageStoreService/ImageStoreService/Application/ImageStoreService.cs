@@ -9,6 +9,7 @@ using ImageStoreService.Domain.Entities;
 using ImageStoreService.Domain.Repositories;
 using ImageStoreService.V1.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace ImageStoreService.Application
@@ -17,11 +18,13 @@ namespace ImageStoreService.Application
     {
         private readonly ILogger<ImageStoreService> logger;
         private readonly IImageRepository imageRepository;
+        private readonly IConfiguration configuration;
 
-        public ImageStoreService(ILogger<ImageStoreService> logger, IImageRepository imageRepository)
+        public ImageStoreService(ILogger<ImageStoreService> logger, IImageRepository imageRepository, IConfiguration configuration)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.imageRepository = imageRepository ?? throw new ArgumentNullException(nameof(imageRepository));
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         public async Task<(bool success, string id)> UploadImage(ImageInputModel inputModel)
@@ -110,7 +113,7 @@ namespace ImageStoreService.Application
             {
                 Description = imageEntity.Description,
                 Id = imageEntity.Id,
-                PictureUrl = $"https://imagehub.azurewebsites.net/api/v1.0/content/{imageEntity.Id}",
+                PictureUrl = $"{configuration.GetValue<string>("Application:BaseUrl")}/api/v1.0/content/{imageEntity.Id}",
                 Title = imageEntity.Title,
                 Uploader = imageEntity.UploaderId
             };
