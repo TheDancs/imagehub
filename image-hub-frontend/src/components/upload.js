@@ -3,8 +3,8 @@ import React from "react";
 
 export function Upload() {
     return (
-        <div className="container">
-            <p content="main--content">Upload!</p>
+        <div>
+            <p className="main--content">Upload!</p>
         </div>
     )
 }

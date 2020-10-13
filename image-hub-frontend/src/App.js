@@ -4,7 +4,7 @@ import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
 import {blue} from "@material-ui/core/colors";
 import {Login} from "./components/login";
 import Routes from "./Routes";
-import AppHeader from "./components/app-bar";
+import PrimarySearchAppBar from "./components/app-bar";
 import UserDataContext from "./context/UserDataContext";
 
 const styles = {};
@@ -21,7 +21,7 @@ styles.content = {
 
 
 function App() {
-    let [isLoggedIn, setIsLoggedIn] = useState(false)
+    let [isLoggedIn, setIsLoggedIn] = useState(true)
     let [fbDatas, setFbDatas] = useState({
         userID: '',
         name: '',
@@ -39,7 +39,7 @@ function App() {
             <ThemeProvider theme={theme}>
                 {!isLoggedIn && <Login setIsLoggedIn={setIsLoggedIn} setFbDatas={setFbDatas}/>}
                 <UserDataContext.Provider value={fbDatas}>
-                    {isLoggedIn && <AppHeader/>}
+                    {isLoggedIn && <PrimarySearchAppBar setIsLoggedIn={setIsLoggedIn}/>}
                     {isLoggedIn && <Routes/>}
                 </UserDataContext.Provider>
 

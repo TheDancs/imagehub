@@ -51,6 +51,11 @@
     color: black;
 }
 
-.user--data{
+.user--data {
     padding-bottom: 4%;
+}
+
+a {
+    color: black;
+    text-decoration: unset;
 }
