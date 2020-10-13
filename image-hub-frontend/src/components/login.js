@@ -37,7 +37,7 @@ export function Login(props) {
                     <FacebookLogin
                         appId="374684060607020"
                         autoLoad={false}
-                        fields="name,email,picture"
+                        fields="id,name,email,picture"
                         callback={responseFacebook}/>
                 </CardActions>
             </Card>
