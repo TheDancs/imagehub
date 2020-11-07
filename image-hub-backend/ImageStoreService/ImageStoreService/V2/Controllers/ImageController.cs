@@ -27,6 +27,11 @@ namespace ImageHubService.V2.Controllers
             return NotFound();
         }
 
+        /// <summary>
+        /// Upload image
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns>OK</returns>
         [Authorize]
         [HttpPost]
         [Consumes("multipart/form-data")]

@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "DefaultConnection"
+    },
+    "secrets1": {
+      "type": "secrets",
+      "connectionId": "VaultUri"
+    },
+    "appInsights1": {
+      "type": "appInsights",
+      "connectionId": "APPINSIGHTS_CONNECTIONSTRING"
+    }
+  }
+}

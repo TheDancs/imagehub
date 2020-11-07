@@ -29,9 +29,9 @@ namespace ImageHubService.V2.Controllers
         [Route("signin")]
         public IActionResult SignInWithFacebook(string ReturnUrl)
         {
-            var redirectUrl = Url.Action(nameof(AuthController.SignInCallback), "Auth", new { returnUrl = ReturnUrl});
+            const string redirectUrl = "https://imagehub.azurewebsites.net/api/v2/auth/callback?returnurl=https://imagehub.azurewebsites.net/swagger";
 
-            return Challenge(new AuthenticationProperties {RedirectUri = "https://localhost:5001/api/v2/auth/callback?returnurl=https://google.com" },
+            return Challenge(new AuthenticationProperties { RedirectUri = redirectUrl },
                 FacebookDefaults.AuthenticationScheme);
         }
 
