@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace ImageStoreService.Config
+namespace ImageHubService.Config.Swagger
 {
     /// <summary>
     /// Configures the Swagger generation options.
@@ -40,7 +36,7 @@ namespace ImageStoreService.Config
         {
             var info = new OpenApiInfo()
             {
-                Title = "Image Store Service API",
+                Title = "Image HUB Service API",
                 Version = description.ApiVersion.ToString(),
                 Description = "-TODO-"
             };

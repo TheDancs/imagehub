@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using ImageStoreService.Domain.Entities;
+using ImageHubService.Domain.Entities;
 
-namespace ImageStoreService.Domain.Repositories
+namespace ImageHubService.Domain.Repositories
 {
     public interface IImageRepository
     {

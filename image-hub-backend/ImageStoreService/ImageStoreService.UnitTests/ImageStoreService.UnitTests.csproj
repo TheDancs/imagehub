@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ImageStoreService\ImageStoreService.csproj" />
+    <ProjectReference Include="..\ImageStoreService\ImageHubService.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,28 +1,28 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using ImageStoreService.Application;
-using ImageStoreService.Config;
-using ImageStoreService.Config.Swagger;
-using ImageStoreService.Domain.Repositories;
-using ImageStoreService.Infrastructure.Repositories;
+using System.Security.Claims;
+using ImageHubService.Application;
+using ImageHubService.Config.Swagger;
+using ImageHubService.Domain.Repositories;
+using ImageHubService.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace ImageStoreService
+namespace ImageHubService
 {
     public class Startup
     {
@@ -59,6 +59,41 @@ namespace ImageStoreService
 
             services.AddSingleton<IImageRepository, InMemoryImageRepo>();
             services.AddScoped<IImageStoreService, Application.ImageStoreService>();
+
+            services.AddDbContext<AppIdentityDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration["ConnectionStrings:DefaultConnection"]));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppIdentityDbContext>();
+
+            services.AddTransient<UserStore<ApplicationUser>>(x =>
+                new UserStore<ApplicationUser>(x.GetRequiredService<AppIdentityDbContext>()));
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/api/v2/Auth/signin";
+                }).AddFacebook(fb =>
+                {
+                    fb.AppId = "374684060607020";
+                    fb.AppSecret = "00b6d3beb7825ccf2d593f026548d26a";
+                    fb.CorrelationCookie.SameSite = SameSiteMode.Lax;
+                    fb.SaveTokens = true;
+                    fb.Fields.Add("id");
+                    fb.Fields.Add("name");
+                });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = new PathString("/Account/AccessDenied");
+                options.Cookie.Name = "Cookie";
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(720);
+                options.LoginPath = new PathString("/api/v2/Auth/signin");
+                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                options.SlidingExpiration = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,9 +108,11 @@ namespace ImageStoreService
 
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
+            app.UseAuthentication();
+
             app.UseRouting();
 
-           // app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -104,5 +141,10 @@ namespace ImageStoreService
                 return Path.Combine(basePath, fileName);
             }
         }
+    }
+
+    public class ApplicationUser : IdentityUser
+    {
+        public string FacebookUserId { get; set; }
     }
 }

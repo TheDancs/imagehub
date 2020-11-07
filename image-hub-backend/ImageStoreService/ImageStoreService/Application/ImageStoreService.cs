@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
-using ImageStoreService.Domain.Entities;
-using ImageStoreService.Domain.Repositories;
-using ImageStoreService.V1.Models;
+using ImageHubService.Domain.Entities;
+using ImageHubService.Domain.Repositories;
+using ImageHubService.V1.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace ImageStoreService.Application
+namespace ImageHubService.Application
 {
     public class ImageStoreService : IImageStoreService
     {

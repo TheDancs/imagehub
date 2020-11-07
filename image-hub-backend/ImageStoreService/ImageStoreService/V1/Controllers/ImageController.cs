@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ImageStoreService.Application;
-using ImageStoreService.V1.Models;
+using ImageHubService.Application;
+using ImageHubService.V1.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ImageStoreService.V1.Controllers
+namespace ImageHubService.V1.Controllers
 {
     [ApiController]
     [ApiVersion("1.0")]

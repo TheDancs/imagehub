@@ -3,10 +3,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ImageStoreService.Domain.Entities;
-using ImageStoreService.Domain.Repositories;
+using ImageHubService.Domain.Entities;
+using ImageHubService.Domain.Repositories;
 
-namespace ImageStoreService.Infrastructure.Repositories
+namespace ImageHubService.Infrastructure.Repositories
 {
     //TODO: thread safety
     public class InMemoryImageRepo : IImageRepository

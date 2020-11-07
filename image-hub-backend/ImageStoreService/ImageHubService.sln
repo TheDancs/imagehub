@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30524.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageStoreService", "ImageStoreService\ImageStoreService.csproj", "{1F16E587-3BA8-4C6C-85BA-5263B6F1957F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageHubService", "ImageStoreService\ImageHubService.csproj", "{1F16E587-3BA8-4C6C-85BA-5263B6F1957F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageStoreService.UnitTests", "ImageStoreService.UnitTests\ImageStoreService.UnitTests.csproj", "{037EF2D0-7433-492B-B3CA-0288B732EB33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageStoreService.UnitTests", "ImageStoreService.UnitTests\ImageStoreService.UnitTests.csproj", "{037EF2D0-7433-492B-B3CA-0288B732EB33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

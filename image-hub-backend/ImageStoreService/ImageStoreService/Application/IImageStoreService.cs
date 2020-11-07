@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
-using ImageStoreService.V1.Models;
+using ImageHubService.V1.Models;
 
-namespace ImageStoreService.Application
+namespace ImageHubService.Application
 {
     public interface IImageStoreService
     {

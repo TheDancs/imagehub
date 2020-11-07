@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ImageStoreService.Domain.Entities
+﻿namespace ImageHubService.Domain.Entities
 {
     public class ImageEntity
     {
