@@ -81,7 +81,7 @@ export function Feed() {
                         <CardHeader
                             avatar={
                                 <Avatar aria-label="recipe" className={classes.avatar}>
-                                    {post.title.charAt(0)}
+                                    {(post.title ? post.title.charAt(0) : "A")}
                                 </Avatar>
                             }
                             title={post.title}
