@@ -38,7 +38,7 @@ namespace ImageHubService.V2.Controllers
         /// </summary>
         /// <returns>List of friend requests</returns>
         /// <response code="200">List of friend requests</response>
-        [HttpGet("/friendrequests")]
+        [HttpGet("friendrequests")]
         [ProducesResponseType(typeof(IEnumerable<FriendRequest>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetFriendRequests()
         {
@@ -53,7 +53,7 @@ namespace ImageHubService.V2.Controllers
         /// <returns>OK</returns>
         /// <response code="200">Done</response>
         /// <response code="400">Already accepted/or not found</response>   
-        [HttpPost("/friendrequests/{id}/accept")]
+        [HttpPost("friendrequests/{id}/accept")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AcceptFriendRequest([FromRoute]string id)
@@ -69,7 +69,7 @@ namespace ImageHubService.V2.Controllers
         /// <returns>OK</returns>
         /// <response code="200">Done</response>
         /// <response code="400">Already rejected/or not found</response>   
-        [HttpPost("/friendrequests/{id}/accept")]
+        [HttpPost("friendrequests/{id}/reject")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RejectFriendRequest([FromRoute] string id)
@@ -85,7 +85,7 @@ namespace ImageHubService.V2.Controllers
         /// <returns>OK</returns>
         /// <response code="200">Done</response>
         /// <response code="400">Something happened</response>   
-        [HttpPost("/user/{id}/add")]
+        [HttpPost("{id}/add")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SendFriendRequest([FromRoute] string userId)
