@@ -76,8 +76,8 @@ namespace ImageHubService
                     options.LoginPath = "/api/v2/Auth/signin";
                 }).AddFacebook(fb =>
                 {
-                    fb.AppId = "374684060607020";
-                    fb.AppSecret = "00b6d3beb7825ccf2d593f026548d26a";
+                    fb.AppId = Configuration["Facebook:AppId"];
+                    fb.AppSecret = Configuration["Facebook:AppSecret"];
                     fb.CorrelationCookie.SameSite = SameSiteMode.Lax;
                     fb.SaveTokens = true;
                     fb.Fields.Add("id");
