@@ -5,12 +5,11 @@ using System.Threading.Tasks;
 
 namespace ImageHubService.V2.Models
 {
-    public class UserModel
+    public class UserSearchResult
     {
-        public string UserId { get; set; } //fb id
+        public string UserId { get; set; }
         public string Name { get; set; }
-        public string Email { get; set; }
         public string ProfilePicture { get; set; }
-        public IEnumerable<UserMetaModel> Friends { get; set; }
+        public bool IsFriend { get; set; }
     }
 }

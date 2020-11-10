@@ -4,14 +4,16 @@ using ImageHubService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ImageHubService.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    partial class AppIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201110131523_AddUserRelation2")]
+    partial class AddUserRelation2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,6 +140,21 @@ namespace ImageHubService.Migrations
                     b.ToTable("Likes");
                 });
 
+            modelBuilder.Entity("ImageHubService.Domain.Entities.Picture", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pictures");
+                });
+
             modelBuilder.Entity("ImageHubService.Domain.Entities.Post", b =>
                 {
                     b.Property<Guid>("Id")
@@ -158,6 +175,8 @@ namespace ImageHubService.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PictureId");
 
                     b.HasIndex("UploaderId");
 
@@ -350,6 +369,12 @@ namespace ImageHubService.Migrations
 
             modelBuilder.Entity("ImageHubService.Domain.Entities.Post", b =>
                 {
+                    b.HasOne("ImageHubService.Domain.Entities.Picture", "Picture")
+                        .WithMany()
+                        .HasForeignKey("PictureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ImageHubService.Domain.Entities.ApplicationUser", "Uploader")
                         .WithMany()
                         .HasForeignKey("UploaderId")

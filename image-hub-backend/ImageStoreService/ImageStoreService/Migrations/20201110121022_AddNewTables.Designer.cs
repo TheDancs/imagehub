@@ -4,14 +4,16 @@ using ImageHubService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ImageHubService.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    partial class AppIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201110121022_AddNewTables")]
+    partial class AddNewTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,9 +65,6 @@ namespace ImageHubService.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("ProfilePicture")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -138,6 +137,21 @@ namespace ImageHubService.Migrations
                     b.ToTable("Likes");
                 });
 
+            modelBuilder.Entity("ImageHubService.Domain.Entities.Picture", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pictures");
+                });
+
             modelBuilder.Entity("ImageHubService.Domain.Entities.Post", b =>
                 {
                     b.Property<Guid>("Id")
@@ -159,32 +173,11 @@ namespace ImageHubService.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PictureId");
+
                     b.HasIndex("UploaderId");
 
                     b.ToTable("Posts");
-                });
-
-            modelBuilder.Entity("ImageHubService.Domain.Entities.UserRelationship", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UserId1")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId2")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId1");
-
-                    b.HasIndex("UserId2");
-
-                    b.ToTable("Relationships");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -350,24 +343,15 @@ namespace ImageHubService.Migrations
 
             modelBuilder.Entity("ImageHubService.Domain.Entities.Post", b =>
                 {
+                    b.HasOne("ImageHubService.Domain.Entities.Picture", "Picture")
+                        .WithMany()
+                        .HasForeignKey("PictureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ImageHubService.Domain.Entities.ApplicationUser", "Uploader")
                         .WithMany()
                         .HasForeignKey("UploaderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ImageHubService.Domain.Entities.UserRelationship", b =>
-                {
-                    b.HasOne("ImageHubService.Domain.Entities.ApplicationUser", "User1")
-                        .WithMany()
-                        .HasForeignKey("UserId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ImageHubService.Domain.Entities.ApplicationUser", "User2")
-                        .WithMany()
-                        .HasForeignKey("UserId2")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

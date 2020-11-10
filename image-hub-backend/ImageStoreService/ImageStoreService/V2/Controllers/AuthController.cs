@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ImageHubService.Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Identity;
@@ -29,7 +30,7 @@ namespace ImageHubService.V2.Controllers
         [Route("signin")]
         public IActionResult SignInWithFacebook(string ReturnUrl)
         {
-            const string redirectUrl = "https://imagehub.azurewebsites.net/api/v2/auth/callback?returnurl=https://imagehub.azurewebsites.net/swagger";
+            const string redirectUrl = "https://localhost:5001/api/v2/auth/callback?returnurl=https://localhost:5001/swagger";
 
             return Challenge(new AuthenticationProperties { RedirectUri = redirectUrl },
                 FacebookDefaults.AuthenticationScheme);
