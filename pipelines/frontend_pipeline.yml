@@ -31,6 +31,6 @@ steps:
 - task: CopyFiles@2
   displayName: 'Copy Files'
   inputs:
-    SourceFolder: 'image-hub-frontend\build'
+    SourceFolder: 'image-hub-frontend/build'
     TargetFolder: '$(build.artifactstagingdirectory)'
     CleanTargetFolder: true
