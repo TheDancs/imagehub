@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Security.Claims;
-using ImageHubService.Application;
+using System.Threading.Tasks;
+using ImageHubService.Application.User.Requests.GetUserById;
 using ImageHubService.Config.Swagger;
+using ImageHubService.Domain.Entities;
 using ImageHubService.Domain.Repositories;
 using ImageHubService.Infrastructure.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -58,11 +61,10 @@ namespace ImageHubService
             services.AddCors();
 
             services.AddSingleton<IImageRepository, InMemoryImageRepo>();
-            services.AddScoped<IImageStoreService, Application.ImageStoreService>();
 
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration["ConnectionStrings:DefaultConnection"]));
+                    Configuration["ConnectionStrings:SQL_ConnectionString"]));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppIdentityDbContext>();
@@ -94,7 +96,37 @@ namespace ImageHubService
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.SlidingExpiration = true;
             });
+
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
+
+            services.ConfigureApplicationCookie(o =>
+            {
+                o.Events = new CookieAuthenticationEvents()
+                {
+                    OnRedirectToLogin = (ctx) =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        {
+                            ctx.Response.StatusCode = 401;
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    OnRedirectToAccessDenied = (ctx) =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        {
+                            ctx.Response.StatusCode = 403;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+            services.AddMediatR(typeof(GetUserByIdCommand).Assembly);
+            services.AddSingleton<IPictureRepo>(new BlobImageRepository(Configuration["BlobStorage:ConnectionString"],
+                Configuration["BlobStorage:ContainerName"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -118,8 +150,8 @@ namespace ImageHubService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });
 
+            });
 
             app.UseSwagger();
             app.UseSwaggerUI(
@@ -142,10 +174,5 @@ namespace ImageHubService
                 return Path.Combine(basePath, fileName);
             }
         }
-    }
-
-    public class ApplicationUser : IdentityUser
-    {
-        public string FacebookUserId { get; set; }
     }
 }

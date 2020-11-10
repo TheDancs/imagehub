@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ImageHubService.Domain.Repositories;
 using ImageHubService.V2.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImageHubService.V2.Controllers
@@ -14,6 +14,13 @@ namespace ImageHubService.V2.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     public class ImageController : Controller
     {
+        private readonly IPictureRepo pictureRepo;
+
+        public ImageController(IPictureRepo pictureRepo)
+        {
+            this.pictureRepo = pictureRepo;
+        }
+
         /// <summary>
         /// Returns post image
         /// </summary>
@@ -22,26 +29,15 @@ namespace ImageHubService.V2.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> Get([FromRoute]string id)
         {
+            var result =  await pictureRepo.RetrieveImage(id);
+            if (result.iamgeStream != null)
+            {
+                return File(result.iamgeStream, result.contentType, id);
+            }
+
             return NotFound();
-        }
-
-        /// <summary>
-        /// Upload image
-        /// </summary>
-        /// <param name="image"></param>
-        /// <returns>OK</returns>
-        [Authorize]
-        [HttpPost]
-        [Consumes("multipart/form-data")]
-        [ProducesResponseType(typeof(UploadResultModel), 200)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> UploadImage([FromForm] ImageInputModel image)
-        {
-            var user = this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value; //fb user id
-
-            return Ok();
         }
     }
 }
