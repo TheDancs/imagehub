@@ -78,8 +78,8 @@ namespace ImageHubService
                     options.LoginPath = "/api/v2/Auth/signin";
                 }).AddFacebook(fb =>
                 {
-                    fb.AppId = Configuration["Facebook:AppId"];
-                    fb.AppSecret = Configuration["Facebook:AppSecret"];
+                    fb.AppId = Configuration["FacebookAppId"];
+                    fb.AppSecret = Configuration["FacebookAppSecret"];
                     fb.CorrelationCookie.SameSite = SameSiteMode.Lax;
                     fb.SaveTokens = true;
                     fb.Fields.Add("id");
@@ -125,8 +125,8 @@ namespace ImageHubService
             });
 
             services.AddMediatR(typeof(GetUserByIdCommand).Assembly);
-            services.AddSingleton<IPictureRepo>(new BlobImageRepository(Configuration["BlobStorage:ConnectionString"],
-                Configuration["BlobStorage:ContainerName"]));
+            services.AddSingleton<IPictureRepo>(new BlobImageRepository(Configuration["BlobStorageConnectionString"],
+                Configuration["BlobStorageContainerName"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
