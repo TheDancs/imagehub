@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
-const url = "https://imagehub.azurewebsites.net/api/v1.0/Image/list";
+const url = "https://imagehub.azurewebsites.net/api/v2.0/Feed";
 
 const useStyles = makeStyles((theme) => ({
     container:{
@@ -79,12 +79,13 @@ export function Feed() {
                 return (
                     <Card className={classes.root}>
                         <CardHeader
+                        title={post.uploader.name}
                             avatar={
                                 <Avatar aria-label="recipe" className={classes.avatar}>
-                                    {(post.title ? post.title.charAt(0) : "A")}
+                                    {(post.uploader.name ? post.uploader.name.charAt(0) : "A")}
                                 </Avatar>
                             }
-                            title={post.title}
+                            
                         />
                         <CardMedia
                             className={classes.media}
@@ -97,7 +98,8 @@ export function Feed() {
                         </CardContent>
                         <CardActions disableSpacing>
                             <IconButton aria-label="add to favorites">
-                                <FavoriteIcon />
+                            <FavoriteIcon />
+                            {post.likes}
                             </IconButton>
 
                         </CardActions>
