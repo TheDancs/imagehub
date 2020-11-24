@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from "react";
-
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
-import FavoriteIcon from '@material-ui/icons/Favorite';
+import CreatePost, { LoadingPost } from "./post";
+import { ShowError } from "./alert";
 
 const url = "https://imagehub.azurewebsites.net/api/v2.0/Feed";
 
@@ -43,74 +35,51 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 export function Feed() {
-
     const [Posts, setPosts] = useState([]);
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
-
+    
     useEffect(() => {
         fetch(url)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          setIsLoaded(true);
-          setPosts(result);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-        }
-      )
-  }, [])
-  const classes = useStyles();
+            .then(response => {
+                if (!response.ok) {
+                    if(response.status === 401)
+                        throw new Error('You are not logged in.');
+                    throw new Error('Unknown error (Something wrong with the network response).');
+                }
+                return response.json();
+            })
+            .then(result => {
+                setIsLoaded(true);
+                setPosts(result);
+            })
+            .catch(error => {
+                setError(error.message);
+                console.log(error);
+            });
+    }, [])
 
+  const classes = useStyles();
   if (error) {
-    return <div className="main--content">Error: {error.message}</div>;
-  } else if (!isLoaded) {
-    return <div className="main--content">Loading...</div>;
-  } else {
     return (
-        
         <div className="main--content">
             <p className={classes.container}>
-            {Posts.map((post) => {
-                return (
-                    <Card className={classes.root}>
-                        <CardHeader
-                        title={post.uploader.name}
-                            avatar={
-                                <Avatar aria-label="recipe" className={classes.avatar}>
-                                    {(post.uploader.name ? post.uploader.name.charAt(0) : "A")}
-                                </Avatar>
-                            }
-                            
-                        />
-                        <CardMedia
-                            className={classes.media}
-                            image={post.pictureUrl}
-                        />
-                        <CardContent>
-                            <Typography variant="body2" color="textSecondary" component="p">
-                                {post.description}
-                            </Typography>
-                        </CardContent>
-                        <CardActions disableSpacing>
-                            <IconButton aria-label="add to favorites">
-                            <FavoriteIcon />
-                            {post.likes}
-                            </IconButton>
-
-                        </CardActions>
-                    </Card>
-                );
-            }
-
-            )
-            }
+                {ShowError("Couldn't load feed", error.toString())}
             </p>
-           
+        </div>);
+} else if (!isLoaded) {
+      return (
+          <div className="main--content">
+              <p className={classes.container}>{LoadingPost()}</p>
+              <p className={classes.container}>{LoadingPost()}</p>
+          </div>);
+  } else {
+    return (
+        <div className="main--content">
+            <p className={classes.container}>
+                {Posts.map((post) => { return CreatePost(post); })}
+            </p>
         </div>
     )
 }}
