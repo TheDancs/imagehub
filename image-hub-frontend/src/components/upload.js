@@ -44,7 +44,6 @@ export function Upload() {
   const [result, setResult] = useState(false);
 
   const userData = useContext(UserDataContext);
-  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -52,7 +51,7 @@ export function Upload() {
     setLoading(true);
 
     const form = new FormData();
-    form.append("Title", title);
+    form.append("Title", userData.name);
     form.append("Description", description);
     form.append("UploaderId", userData.userID);
     form.append("File", selectedFile);
@@ -98,15 +97,6 @@ export function Upload() {
           <form onSubmit={handleSubmit}>
             <h1 className={classes.container}> Upload an image</h1>
 
-            <p>
-              {" "}
-              <Input
-                className={classes.container}
-                placeholder="Title"
-                inputProps={{ "aria-label": "description" }}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </p>
             <p className={classes.center}>
               <Input
                 className={classes.container}
