@@ -7,7 +7,7 @@ import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import SearchIcon from '@material-ui/icons/Search';
+
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -16,6 +16,8 @@ import {Link} from "react-router-dom";
 import logo from "../assets/images/menu-logo.png";
 import PublishIcon from '@material-ui/icons/Publish';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+
+import { SearchResult } from './modals';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -46,17 +48,10 @@ const useStyles = makeStyles((theme) => ({
             width: 'auto',
         },
     },
-    searchIcon: {
-        padding: theme.spacing(0, 2),
-        height: '100%',
-        position: 'absolute',
-        pointerEvents: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+    
     inputRoot: {
         color: 'inherit',
+        paddingLeft: '25px'
     },
     inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
@@ -82,6 +77,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+
 export default function PrimarySearchAppBar(props) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -89,6 +85,7 @@ export default function PrimarySearchAppBar(props) {
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+    
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -106,6 +103,10 @@ export default function PrimarySearchAppBar(props) {
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget);
     };
+    
+
+    
+
 
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -178,17 +179,9 @@ export default function PrimarySearchAppBar(props) {
                         </Link>
                     </div>
                     <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon/>
-                        </div>
-                        <InputBase
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{'aria-label': 'search'}}
-                        />
+                        <SearchResult/>
+{//itt volt e
+}
                     </div>
                     <div className={classes.grow}/>
                     <div className={classes.sectionDesktop}>
@@ -242,3 +235,4 @@ export default function PrimarySearchAppBar(props) {
         </div>
     );
 }
+
