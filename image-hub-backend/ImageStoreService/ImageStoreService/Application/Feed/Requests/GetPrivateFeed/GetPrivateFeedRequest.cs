@@ -49,7 +49,7 @@ namespace ImageHubService.Application.Feed.Requests.GetPrivateFeed
                     Description = x.Description,
                     Id = x.Id.ToString(),
                     Likes = x.Likes.Count,
-                    PictureUrl = $"{configuration["Application:BaseUrl"]}/api/v2.0/image/{x.PictureId}",
+                    PictureUrl = $"{configuration["ApplicationBaseUrl"]}/api/v2.0/image/{x.PictureId}",
                     UploadTime = x.UploadTime,
                     Uploader = new UserMetaModel() {Id = x.UploaderId, Name = x.Uploader.UserName}
                 }); //TODO: URL
