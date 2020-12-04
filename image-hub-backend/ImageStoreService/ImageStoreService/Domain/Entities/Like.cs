@@ -18,9 +18,6 @@ namespace ImageHubService.Domain.Entities
         [Required]
         public string UserId { get; set; }
 
-        [ForeignKey("UserId")]
-        public ApplicationUser User { get; set; }
-
         [ForeignKey("PostId")]
         public Post Post { get; set; }
 

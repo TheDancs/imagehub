@@ -26,33 +26,32 @@ namespace ImageHubService.Application.User.Requests.FindUserByName
         public class Handler : IRequestHandler<FindUserByNameRequest, IEnumerable<UserSearchResult>>
         {
             private readonly AppIdentityDbContext _database;
-            private readonly IUserStore<ApplicationUser> userStore;
 
-            public Handler(AppIdentityDbContext database, IUserStore<ApplicationUser> userStore)
+            public Handler(AppIdentityDbContext database)
             {
                 _database = database;
-                this.userStore = userStore;
             }
 
-            public async Task<IEnumerable<UserSearchResult>> Handle(FindUserByNameRequest request, CancellationToken cancellationToken)
+            public async Task<IEnumerable<UserSearchResult>> Handle(FindUserByNameRequest request,
+                CancellationToken cancellationToken)
             {
-                var user = await userStore.FindByIdAsync(request.FromUserId, cancellationToken).ConfigureAwait(false);
-                if (user != null)
+
+                var friends = await _database.Relationships
+                    .Where(x => x.UserId1 == request.FromUserId || x.UserId2 == request.FromUserId)
+                    .ToListAsync(cancellationToken: cancellationToken);
+                var searchResult = new List<ApplicationUser>();
+
+                return searchResult.Select(x => new UserSearchResult()
                 {
-                    var friends = await _database.Relationships
-                        .Where(x => x.UserId1 == request.FromUserId || x.UserId2 == request.FromUserId).ToListAsync(cancellationToken: cancellationToken);
-                    var searchResult = await _database.Users.Where(x => x.UserName.Contains(request.Name))
-                        .ToListAsync(cancellationToken);
+                    IsFriend = friends.Any(y => y.UserId1 == x.Id || y.UserId2 == x.Id),
+                    Name = x.UserName,
+                    ProfilePicture = x.ProfilePicture,
+                    UserId = x.Id
+                });
 
-                    return searchResult.Select(x => new UserSearchResult()
-                    {
-                        IsFriend = friends.Any(y => y.UserId1 == x.Id || y.UserId2 == x.Id), Name = x.UserName,
-                        ProfilePicture = x.ProfilePicture, UserId = x.Id
-                    });
-                }
 
-                return new List<UserSearchResult>(); //TODO: send back meaning full result
             }
+
         }
     }
 }

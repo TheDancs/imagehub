@@ -18,10 +18,5 @@ namespace ImageHubService.Domain.Entities
         public string To { get; set; }
         [Required]
         public DateTime Created { get; set; }
-
-        [ForeignKey("From")]
-        public ApplicationUser FromUser { get; set; }
-        [ForeignKey("To")]
-        public ApplicationUser ToUser { get; set; }
     }
 }

@@ -33,7 +33,7 @@ namespace ImageHubService.Application.Relationship.Requests.GetFriendRequests
             {
                 return await database.FriendRequests.Where(x => x.To == request.UserId).Select(y => new FriendRequest()
                 {
-                    From = new UserMetaModel() {Id = y.FromUser.Id, Name = y.FromUser.UserName}, Id = y.Id.ToString(),
+                    From = new UserMetaModel() {Id = y.From, Name = "TODO" }, Id = y.Id.ToString(),
                     RequestTime = y.Created
                 }).ToListAsync(cancellationToken);
             }

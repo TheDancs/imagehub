@@ -24,34 +24,14 @@ namespace ImageHubService.Application.User.Requests.GetUserById
         public class Handler : IRequestHandler<GetUserByIdCommand, UserModel>
         {
             private readonly AppIdentityDbContext _database;
-            private readonly IUserStore<ApplicationUser> userStore;
 
-            public Handler(AppIdentityDbContext database, IUserStore<ApplicationUser> userStore)
+            public Handler(AppIdentityDbContext database)
             {
                 _database = database;
-                this.userStore = userStore;
             }
 
             public async Task<UserModel> Handle(GetUserByIdCommand request, CancellationToken cancellationToken)
             {
-                var user = await userStore.FindByIdAsync(request.UserId, cancellationToken).ConfigureAwait(false);
-                if (user != null)
-                {
-                    var friends = await _database.Relationships.Where(x =>
-                        x.UserId1 == request.UserId || x.UserId2 == request.UserId)
-                        .Include(y => y.User1)
-                        .Include(x=>x.User2)
-                        .ToListAsync(cancellationToken: cancellationToken);
-
-                    return new UserModel()
-                    {
-                        Email = user.Email,
-                        Friends = friends.Select(x => ConvertToUserMeta(x, request.UserId)).ToList(),
-                        Name = user.UserName,
-                        ProfilePicture = user.ProfilePicture,
-                        UserId = user.Id
-                    };
-                }
 
                 return null;
             }
@@ -60,10 +40,10 @@ namespace ImageHubService.Application.User.Requests.GetUserById
             {
                 if (x.UserId1 != userId)
                 {
-                    return new UserMetaModel() { Id = x.UserId1, Name = x.User1.UserName };
+                    return new UserMetaModel() { Id = x.UserId1, Name = "TODO" };
                 }
 
-                return new UserMetaModel() { Id = x.UserId2, Name = x.User2.UserName };
+                return new UserMetaModel() { Id = x.UserId2, Name = "TODO" };
             }
         }
     }

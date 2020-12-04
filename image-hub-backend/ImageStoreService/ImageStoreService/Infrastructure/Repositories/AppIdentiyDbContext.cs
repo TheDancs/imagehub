@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ImageHubService.Infrastructure.Repositories
 {
-    public class AppIdentityDbContext : IdentityDbContext<ApplicationUser>
+    public class AppIdentityDbContext : DbContext
     {
         public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options) { }
 

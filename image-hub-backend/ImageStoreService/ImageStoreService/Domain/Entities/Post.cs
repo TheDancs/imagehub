@@ -22,11 +22,10 @@ namespace ImageHubService.Domain.Entities
         public Guid PictureId { get; set; }
         [Required]
         public DateTime UploadTime { get; set; }
+
         [Required]
         public string UploaderId { get; set; }
 
-        [ForeignKey("UploaderId")]
-        public ApplicationUser Uploader { get; set; }
         public ICollection<Like> Likes { get; set; }
     }
 }

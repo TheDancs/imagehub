@@ -16,10 +16,5 @@ namespace ImageHubService.Domain.Entities
         public string UserId1 { get; set; }
         [Required]
         public string UserId2 { get; set; }
-
-        [ForeignKey("UserId1")]
-        public ApplicationUser User1 { get; set; }
-        [ForeignKey("UserId2")]
-        public ApplicationUser User2 { get; set; }
     }
 }

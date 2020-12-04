@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImageHubService.V2.Controllers
 {
-    [Authorize]
+    [Authorize("ImageHubIDP")]
     [ApiController]
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
