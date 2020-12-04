@@ -2,11 +2,11 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
+using IdentityServer4;
 
-namespace ImageHub.IDP
+namespace ImageHub.Identity
 {
     public static class Config
     {
@@ -36,7 +36,7 @@ namespace ImageHub.IDP
                 {
                     Name = "imagehubapi.all",
                     DisplayName = "Read/Write/Delete images"
-                }, 
+                },
             };
 
         public static IEnumerable<Client> Clients =>

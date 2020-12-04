@@ -3,7 +3,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { red } from "@material-ui/core/colors";
 import CreatePost, { LoadingPost } from "./post";
 import { ShowError } from "./alert";
-import {AuthManager} from '../providers/authProvider'
+import { Link } from "react-router-dom";
+import PrimarySearchAppBar from "../components/app-bar";
+import { AuthManager } from "../providers/authProvider";
 
 const url = "https://imagehub.azurewebsites.net/api/v2.0/Feed";
 
@@ -36,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function Feed() {
+export const Feed = () => {
   const [Posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -63,32 +65,30 @@ export function Feed() {
       });
   }, []);
 
-  AuthManager.getUser().then(user => console.log(user.profile))
-
   const classes = useStyles();
   if (error) {
     return (
       <div className="main--content">
-        <p className={classes.container}>
+        <div className={classes.container}>
           {ShowError("Couldn't load feed", error.toString())}
-        </p>
+          <Link to="/profile">profile</Link>
+        </div>
       </div>
     );
   } else if (!isLoaded) {
     return (
       <div className="main--content">
-        <p className={classes.container}>{LoadingPost()}</p>
-        <p className={classes.container}>{LoadingPost()}</p>
+        <Link to="/profile">profile</Link>
       </div>
     );
   } else {
     return (
       <div className="main--content">
-        <p className={classes.container}>
+        <div className={classes.container}>
           {Posts.map((post) => {
             return CreatePost(post);
           })}
-        </p>
+        </div>
       </div>
     );
   }

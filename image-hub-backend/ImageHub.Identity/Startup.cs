@@ -3,26 +3,26 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using IdentityServer4;
 using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.EntityFramework.Mappers;
-using IdentityServerHost.Quickstart.UI;
+using ImageHub.Identity.Data;
+using ImageHub.Identity.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace ImageHub.IDP
+namespace ImageHub.Identity
 {
     public class Startup
     {
-        private const string MIGRATION_ASSEMBLY = "ImageHub.IDP";
+        private const string MIGRATION_ASSEMBLY = "ImageHub.Identity";
 
         public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
@@ -35,15 +35,34 @@ namespace ImageHub.IDP
 
         public void ConfigureServices(IServiceCollection services)
         {
+
             var dbConnectionString = Configuration["ImageHubDbConnectionString"];
 
             services.AddControllersWithViews();
 
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(dbConnectionString));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+                {
+                    var allowed = options.User.AllowedUserNameCharacters
+                                  + " éáőúűöüóÉÁŐÚŰÓÜÖ";
+                    options.User.AllowedUserNameCharacters = allowed;
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
             var builder = services.AddIdentityServer(options =>
             {
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+
+                // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 options.EmitStaticAudienceClaim = true;
             })
-                .AddTestUsers(TestUsers.Users);
+                .AddAspNetIdentity<ApplicationUser>();
 
             builder.AddConfigurationStore(options =>
             {
@@ -91,6 +110,7 @@ namespace ImageHub.IDP
             InitializeDatabase(app);
 
             app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseIdentityServer();
@@ -106,6 +126,7 @@ namespace ImageHub.IDP
         {
             using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
 
+            serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
             serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
 
             var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
@@ -113,7 +134,7 @@ namespace ImageHub.IDP
 
             foreach (var client in Config.Clients)
             {
-                var existing = context.Clients.Include(x=>x.AllowedScopes).FirstOrDefault(x => x.ClientId == client.ClientId);
+                var existing = context.Clients.Include(x => x.AllowedScopes).FirstOrDefault(x => x.ClientId == client.ClientId);
                 if (existing != null)
                 {
                     context.Clients.Update(existing);

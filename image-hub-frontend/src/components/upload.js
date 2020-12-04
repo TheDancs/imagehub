@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function Upload() {
+export const Upload = () => {
   const classes = useStyles();
 
   const [loading, setLoading] = useState(false);
