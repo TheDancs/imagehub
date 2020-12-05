@@ -6,13 +6,12 @@ import Button from '@material-ui/core/Button';
 import RecipeReviewCard from "./post";
 import Paper from '@material-ui/core/Paper';
 import GridList from '@material-ui/core/GridList';
-import { FrienRequests, ViewFriends } from "./modals";
+import { FriendRequests, ViewFriends } from "./modals";
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import { ShowError, ShowInfo } from "./alert";
 import { AuthManager } from "../providers/authProvider";
 
-//@TODO: Modalok átírása, amik ki vannak kommentelve, mert ott száll el jelenleg.
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -123,7 +122,7 @@ export function ProfileSummary(user_id) {
         .catch(err => setError(err))
         .finally(setIsLoaded(true));
     else if(userSummary != null)
-      ;//rqButton = (FrienRequests(userSummary.friendRequests));
+      rqButton = (<><FriendRequests requs={userSummary.friendRequests}/></>);
   }
   else {
     //Ha még nem próbáltuk betölteni
@@ -185,8 +184,8 @@ export function ProfileSummary(user_id) {
                   <Grid container spacing={2}
                     direction="row">
                     <Grid item >
-                      {//ViewFriends(userSummary.id)
-                      }
+                      <ViewFriends friendsList={userSummary.id} />
+                      
                     </Grid>
                     <Grid item>
                       {rqButton}
@@ -205,12 +204,12 @@ export function ProfileSummary(user_id) {
 }
 
 //@TODO: Ezeket a linkeket megírni.
-async function Unfriend(){
+async function Unfriend(id){
   var url = "";
   await postData(url);
 }
 
-async function SendFriendRequest(){
+async function SendFriendRequest(id){
   var url = "";
   await postData(url);
 }
