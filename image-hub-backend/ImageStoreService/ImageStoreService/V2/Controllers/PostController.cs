@@ -36,7 +36,7 @@ namespace ImageHubService.V2.Controllers
         [HttpPost]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(UploadResultModel), 200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(UploadResultModel), 400)]
         public async Task<IActionResult> UploadPost([FromForm] ImageInputModel image)
         {
             var user = this.GetUserId();
@@ -45,10 +45,10 @@ namespace ImageHubService.V2.Controllers
 
             if (uploadResult.success)
             {
-                return Ok(new UploadResultModel() { ImageId = uploadResult.id });
+                return Ok(new UploadResultModel() { ImageId = uploadResult.id, IsSuccess = true});
             }
 
-            return BadRequest();
+            return BadRequest(new UploadResultModel(){IsSuccess = false, ErrorCode = uploadResult.errorCode});
         }
 
         /// <summary>

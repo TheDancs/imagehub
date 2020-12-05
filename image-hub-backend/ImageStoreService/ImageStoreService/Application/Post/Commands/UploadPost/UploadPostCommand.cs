@@ -10,7 +10,7 @@ using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 
 namespace ImageHubService.Application.Post.Commands.UploadPost
 {
-    public class UploadPostCommand : IRequest<(bool success, string id)>
+    public class UploadPostCommand : IRequest<(bool success, string id, int errorCode)>
     {
         public IFormFile File { get; set; }
         public string Description { get; set; }
@@ -23,7 +23,7 @@ namespace ImageHubService.Application.Post.Commands.UploadPost
             UploaderId = uploaderId;
         }
 
-        public class Handler : IRequestHandler<UploadPostCommand, (bool success, string id)>
+        public class Handler : IRequestHandler<UploadPostCommand, (bool success, string id, int errorCode)>
         {
             private readonly IPictureRepo imageRepository;
             private readonly AppIdentityDbContext database;
@@ -36,7 +36,7 @@ namespace ImageHubService.Application.Post.Commands.UploadPost
                 this.computerVisionClient = computerVisionClient;
             }
 
-            public async Task<(bool success, string id)> Handle(UploadPostCommand request, CancellationToken cancellationToken)
+            public async Task<(bool success, string id, int errorCode)> Handle(UploadPostCommand request, CancellationToken cancellationToken)
             {
                 var imageId = Guid.NewGuid();
                 var result = await imageRepository.UploadImage(imageId.ToString(), request.File.OpenReadStream(),
@@ -56,12 +56,13 @@ namespace ImageHubService.Application.Post.Commands.UploadPost
 
                         await database.SaveChangesAsync(cancellationToken);
 
-                        return (true, imageId.ToString());
+                        return (true, imageId.ToString(), -1);
                     }
                     //TODO: remove picture
+                    return (false, null, 2);
                 }
 
-                return (false, null);
+                return (false, null, 1);
             }
         }
     }

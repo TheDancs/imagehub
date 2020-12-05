@@ -65,7 +65,9 @@ namespace ImageHub.Identity
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "imagehubapi"
+                        "imagehubapi",
+                        IdentityServerConstants.StandardScopes.Email,
+                        "picture"
                     },
                     ClientSecrets =
                     {

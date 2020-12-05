@@ -215,6 +215,13 @@ namespace IdentityServerHost.Quickstart.UI
                 filtered.Add(new Claim(JwtClaimTypes.Email, email));
             }
 
+            //picture
+            var picture = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Picture)?.Value;
+            if (picture != null)
+            {
+                filtered.Add(new Claim(JwtClaimTypes.Picture, picture));
+            }
+
             var user = new ApplicationUser
             {
                 Id = providerUserId,

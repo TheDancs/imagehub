@@ -4,12 +4,16 @@
 
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
+using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using ImageHub.Identity.Data;
 using ImageHub.Identity.Models;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -84,6 +88,17 @@ namespace ImageHub.Identity
                     options.Scope.Add("email");
                     options.Fields.Add("id");
                     options.SaveTokens = true;
+                    options.Fields.Add("picture");
+                    options.Events = new OAuthEvents
+                    {
+                        OnCreatingTicket = context =>
+                        {
+                            var identity = (ClaimsIdentity)context.Principal.Identity;
+                            var profileImg = context.User.GetProperty("picture").GetProperty("data").GetProperty("url").ToString();
+                            identity.AddClaim(new Claim(JwtClaimTypes.Picture, profileImg));
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             if (Environment.IsDevelopment())

@@ -24,12 +24,21 @@ export default class AuthService {
 
     this.UserManager.events.addUserLoaded((user) => {
       if (window.location.href.indexOf("signin-oidc") !== -1) {
+        console.log(user);
         axios({
           method: "post",
           url: "https://imagehub.azurewebsites.net/api/v2.0/user",
           headers: { Authorization: "Bearer " + user.access_token },
-          data: { id: user.profile.sub, name: user.profile.name },
+          data: {
+            id: user.profile.sub,
+            name: user.profile.name,
+            email: user.profile.email,
+            profilePictureUrl: user.profile.picture,
+          },
         }).then(() => {
+          this.navigateToScreen();
+        }, error => {
+          //TODO error page
           this.navigateToScreen();
         });
       }

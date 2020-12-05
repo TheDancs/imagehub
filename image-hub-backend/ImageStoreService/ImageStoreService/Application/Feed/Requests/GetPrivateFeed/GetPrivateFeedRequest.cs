@@ -49,7 +49,7 @@ namespace ImageHubService.Application.Feed.Requests.GetPrivateFeed
                     PictureUrl = $"{configuration["ApplicationBaseUrl"]}/api/v2.0/image/{x.PictureId}",
                     UploadTime = x.UploadTime,
                     Uploader = new UserMetaModel() { Id = x.UploaderId, Name = x.Uploader.Name }
-                }); //TODO: URL
+                });
             }
         }
     }
