@@ -222,11 +222,9 @@ export function GetUserPosts(userid) {
 
 
 export async function FetchUrl(url) {
-  var token;
+  const user = await AuthManager.getUser();
 
-  await AuthManager.getUser().then(user => token = user.access_token)
-
-  const respon = await fetch(url, { headers: { 'Authorization': "Bearer " + token } });
+  const respon = await fetch(url, { headers: { 'Authorization': "Bearer " + user.access_token } });
 
   if (!respon.ok) {
     if (respon.status === 401)

@@ -1,5 +1,6 @@
 import { IDENTITY_CONFIG, METADATA_OIDC } from "../utils/authConst";
 import { UserManager, WebStorageStateStore, Log } from "oidc-client";
+import axios from "axios";
 
 export default class AuthService {
   UserManager;
@@ -20,9 +21,17 @@ export default class AuthService {
     // Logger
     Log.logger = console;
     Log.level = Log.DEBUG;
+
     this.UserManager.events.addUserLoaded((user) => {
       if (window.location.href.indexOf("signin-oidc") !== -1) {
-        this.navigateToScreen();
+        axios({
+          method: "post",
+          url: "https://imagehub.azurewebsites.net/api/v2.0/user",
+          headers: { Authorization: "Bearer " + user.access_token },
+          data: { id: user.profile.sub, name: user.profile.name },
+        }).then(() => {
+          this.navigateToScreen();
+        });
       }
     });
     this.UserManager.events.addSilentRenewError((e) => {
@@ -36,9 +45,7 @@ export default class AuthService {
   }
 
   signinRedirectCallback = () => {
-    this.UserManager.signinRedirectCallback().then(() => {
-      "";
-    });
+    this.UserManager.signinRedirectCallback();
   };
 
   getUser = async () => {
