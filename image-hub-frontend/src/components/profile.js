@@ -1,20 +1,18 @@
-import React, { useState, useEffect, useContext } from "react";
-import UserDataContext from "../context/UserDataContext";
+import React, { useState } from "react";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from '@material-ui/core/styles';
-import { red } from '@material-ui/core/colors';
-import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import RecipeReviewCard from "./post";
 import Paper from '@material-ui/core/Paper';
 import GridList from '@material-ui/core/GridList';
-import TransitionsModal, { FrienRequests, ViewFriends } from "./modals";
+import { FrienRequests, ViewFriends } from "./modals";
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import { ShowError } from "./alert";
+import { ShowError, ShowInfo } from "./alert";
+import { AuthManager } from "../providers/authProvider";
 
+//@TODO: Modalok átírása, amik ki vannak kommentelve, mert ott száll el jelenleg.
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -68,160 +66,187 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export function Profile(id = 'me') {
-  if(typeof id != typeof string)
-    id ="me";
+export function Profile(id) {
+  //ez nem tudom miért kell, de enélkül nem működik
+  if (typeof id != typeof string)
+    id = "me";
 
-  var profileUrl = "https://imagehub.azurewebsites.net/api/v2.0/User/"+id;
-  var user;
-  user = useContext(UserDataContext);
-  if(id != "me" && user == null){
-    user = FetchUrl(profileUrl).
-    catch(error =>{
-      console.log(error);
-    } ) 
-  }
- 
-  var frnd = [{name:"csicska 3idjf"}]
-  var posts = UserPosts(id);
-  var mockuser = {id:22, name: "Károly Kovács", friends: frnd, posts: posts };
-    //Fetch user
-    return (
-      <Container>
-        <Typography>
-          {ProfileSummary(user)}
-          <GridList cols="3" width="800">
-            {posts.map((post) => {
-              return (
-                RecipeReviewCard(post)
-              );
-            }
-  
-            )
-            }
-          </GridList>
-  
-        </Typography>
-     </Container>
-  
-    )
-  
+  //lekérjük az adott id-hez tartozó feedet
+  var posts = GetUserPosts(id);
 
+  //ez html formátumban a feed, vagy ha nincs mit betölteni, akkor egy hibaüzenet.
+  var POSTS;
 
+  if (posts != null && posts.length > 0)
+    POSTS = (
+      <>
+        <GridList cols="3" width="800">
+          {posts.map((post) => {
+            return (
+              RecipeReviewCard(post)
+            );
+          })}
+        </GridList>
+      </>
+    );
+
+  else
+    POSTS = (<> <div margin="20px"> {ShowInfo("No posts to show", "This user has not upload any post yet.")}</div> </>);
+
+  return (
+    <Container>
+      <div>
+        {ProfileSummary(id)}
+        {POSTS}
+      </div>
+    </Container>
+  );
 }
 
+export function ProfileSummary(user_id) {
+  const url = "";
 
-export function ProfileSummary(user) {
   const classes = useStyles();
-  var requests;
-  var me = useContext(UserDataContext);
-    
-    var rqButton = (<Button >Send FriendRequest</Button>);
-    if(me === user){
-      console.log("!user");
-      
-      console.log(user.name);
-      requests = GetFriendRequests().catch(error => { console.log(error)});
-      rqButton = (FrienRequests(requests))
+
+  const [userSummary, setUserSummary] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [error, setError] = useState(null);
+
+  var rqButton;
+
+  //Ha a saját profilunk kell.
+  if (user_id === "me") {
+    if(!isLoaded)
+//@TODO: Erre kell vlami ami mindenféle adatot tartalmaz magunkról minimum név,kép,hánybarát,poszt,ill a barátoknak jelölés lista.
+      AuthManager.getUser()
+        .then(us => setUserSummary(us))
+        .catch(err => setError(err))
+        .finally(setIsLoaded(true));
+    else if(userSummary != null)
+      ;//rqButton = (FrienRequests(userSummary.friendRequests));
+  }
+  else {
+    //Ha még nem próbáltuk betölteni
+    if (!isLoaded)
+      FetchUrl(url)
+        .then(res => setUserSummary(res))
+        .catch(err => setError(err))
+        .finally(() => setIsLoaded(true));
+    //Ha már be van töltve, és sikeresen
+    else if (userSummary != null) {
+      //Ha a barátunk
+      if (userSummary.isFriend) {
+        rqButton = (<Button onClick={Unfriend()} >Delete friend</Button>);
+      }
+      //ha nem a barátunk
+      else {
+        rqButton = (<Button onClick={SendFriendRequest()} >Send Friendrequest</Button>);
+      }
     }
-    
-   
+  }
+  
+  //Ha valami hiba van, és nem sikerült a profilt betölteni.
+  if (error || userSummary == null) {
+    return (
+      <div className="main--content">
+        <div className={classes.container}>
+          {ShowError("Something went wrong", error?.message)}
+        </div>
+      </div>
+    );
+  }
+  else if(!isLoaded){
+    //Talán később egy skeletont csinálhatnánk hozzá
+  }
+  //Ha betöltöttük 
+  else {
     return (
       <div className="main--content">
         <Paper elevation={1} className="paper--profile" variant="elevation">
-          <Grid container spacing={5}>
-            <Grid item justify="center" alignContent="center">
-              <Avatar src={user.profilPicture} className={classes.avatarProfile} />
+          <Grid container spacing={5} justify="center" alignContent="center">
+            <Grid item >
+              <Avatar src={userSummary.profilPicture} className={classes.avatarProfile} />
             </Grid>
             <Grid item xs={12} sm container>
               <Grid item container direction="column" alignItems="stretch" justify="center">
                 <Grid item xs>
                   <Typography variant="h4">
-                    {user.name}
+                    {userSummary.name}
                   </Typography>
-               </Grid>
-                    <Grid item xs>
-                      <Typography variant="subtitle1" gutterBottom>
-                        {user.posts?.length} Posts  |  {user.friends?.length} Friends
+                </Grid>
+                <Grid item xs>
+                  <Typography variant="subtitle1" gutterBottom>
+                    {userSummary.posts} Posts  |  {userSummary.friends} Friends
                   </Typography>
-                  </Grid>
+                </Grid>
 
 
                 <Grid item xs>
                   <Grid container spacing={2}
                     direction="row">
                     <Grid item >
-                      {ViewFriends(user.friends)}
-
+                      {//ViewFriends(userSummary.id)
+                      }
                     </Grid>
                     <Grid item>
                       {rqButton}
                     </Grid>
-
-
                   </Grid>
-
                 </Grid>
-
               </Grid>
             </Grid>
           </Grid>
         </Paper>
       </div>
     );
-  
-  
-
   }
 
 
+}
 
+//@TODO: Ezeket a linkeket megírni.
+async function Unfriend(){
+  var url = "";
+  await postData(url);
+}
 
+async function SendFriendRequest(){
+  var url = "";
+  await postData(url);
+}
 
-
-
-export function UserPosts(userid) {
+export function GetUserPosts(userid) {
   var feedUrl = "https://imagehub.azurewebsites.net/api/v2.0/Feed/user/" + userid;
-  //var feed = FetchUrl(feedUrl);
-  var feed = [{ title: "Post1", description: "Desc1", pictureUrl: "asdfad", likes: 10, uploader: { name: "adfads", id: "asdfa" } },
-  { title: "Post1s", description: "Desc1s", pictureUrl: "asdfad", likes: 10, uploader: { name: "adfads", id: "asdfa" } }]
+  var feed = FetchUrl(feedUrl).catch(err => console.log(err));
   return feed;
 }
 
-async function GetFriendRequests() {
-  console.log("Function: GetFriendRequests");
-  var url = "https://imagehub.azurewebsites.net/api/v2.0/User/friendrequests"
-  var requests;
-  try{
-    requests = await FetchUrl(url);
-    return requests;
-  }
-  catch(err){
-    throw new Error("Couldn't load Friend requests because: \n" + err.message)
-  }
-  
 
-  
-}
+export async function FetchUrl(url) {
+  var token;
 
-export async function FetchUrl(url){
-  const valasz = await fetch(url);
-  
-  if(!valasz.ok){
-    if(valasz.status == 401)
+  await AuthManager.getUser().then(user => token = user.access_token)
+
+  const respon = await fetch(url, { headers: { 'Authorization': "Bearer " + token } });
+
+  if (!respon.ok) {
+    if (respon.status === 401)
       throw new Error('You are not logged in.');
     throw new Error('Unknown error (Something wrong with the network response).');
   }
-  else{
-    var ansf = valasz.json();
+  else {
+    var ansf = respon.json();
     return ansf;
   }
-  
 }
 
-async function postData(url = '') {
+export async function postData(url) {
+  var token;
+  await AuthManager.getUser().then(user => token = user.access_token)
+
   const response = await fetch(url, {
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    method: 'POST',
+    headers:{'Authorization': "Bearer " + token }
   });
   return response.json(); // parses JSON response into native JavaScript objects
 }
