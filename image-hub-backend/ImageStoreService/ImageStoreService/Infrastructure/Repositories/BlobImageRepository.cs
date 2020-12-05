@@ -33,7 +33,6 @@ namespace ImageHubService.Infrastructure.Repositories
             {
 
                 var result = await blobClient.UploadAsync(imageStream, new BlobHttpHeaders() { ContentType = contentType }, conditions: null);
-                imageStream.Close();
                 return true;
             }
             catch (Exception e)

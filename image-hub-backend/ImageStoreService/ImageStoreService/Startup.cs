@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -70,8 +71,6 @@ namespace ImageHubService
 
             services.AddCors();
 
-            services.AddSingleton<IImageRepository, InMemoryImageRepo>();
-
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlServer(
                     Configuration["ImageHubDbConnection"]));
@@ -81,6 +80,9 @@ namespace ImageHubService
             services.AddMediatR(typeof(GetPrivateFeedRequest).Assembly);
             services.AddSingleton<IPictureRepo>(new BlobImageRepository(Configuration["BlobStorageConnectionString"],
                 Configuration["BlobStorageContainerName"]));
+
+            services.AddSingleton<IComputerVisionClient>(
+                new ComputerVisionClient(new ApiKeyServiceClientCredentials(Configuration["Vision"])));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

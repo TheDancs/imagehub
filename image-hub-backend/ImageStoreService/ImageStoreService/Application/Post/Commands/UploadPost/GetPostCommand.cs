@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ImageHubService.Domain.Repositories;
 using ImageHubService.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 
 namespace ImageHubService.Application.Post.Commands.UploadPost
 {
@@ -25,11 +27,13 @@ namespace ImageHubService.Application.Post.Commands.UploadPost
         {
             private readonly IPictureRepo imageRepository;
             private readonly AppIdentityDbContext database;
+            private readonly IComputerVisionClient computerVisionClient;
 
-            public Handler(AppIdentityDbContext database, IPictureRepo imageRepository)
+            public Handler(AppIdentityDbContext database, IPictureRepo imageRepository, IComputerVisionClient computerVisionClient)
             {
                 this.database = database;
                 this.imageRepository = imageRepository;
+                this.computerVisionClient = computerVisionClient;
             }
 
             public async Task<(bool success, string id)> Handle(UploadPostCommand request, CancellationToken cancellationToken)
@@ -39,17 +43,22 @@ namespace ImageHubService.Application.Post.Commands.UploadPost
                     request.File.ContentType);
                 if (result)
                 {
-                    await database.Posts.AddAsync(new Domain.Entities.Post()
+                    var tagResponse = await computerVisionClient.TagImageInStreamWithHttpMessagesAsync(request.File.OpenReadStream(), cancellationToken: cancellationToken);
+                    if (!tagResponse.Body.Tags.Any(x => x.Name == "airplane" && x.Confidence > 0.7))
                     {
-                        Description = request.Description,
-                        PictureId = imageId,
-                        UploadTime = DateTime.UtcNow,
-                        UploaderId = request.UploaderId
-                    }, cancellationToken);
+                        await database.Posts.AddAsync(new Domain.Entities.Post()
+                        {
+                            Description = request.Description,
+                            PictureId = imageId,
+                            UploadTime = DateTime.UtcNow,
+                            UploaderId = request.UploaderId
+                        }, cancellationToken);
 
-                    await database.SaveChangesAsync(cancellationToken);
+                        await database.SaveChangesAsync(cancellationToken);
 
-                    return (true, imageId.ToString());
+                        return (true, imageId.ToString());
+                    }
+                    //TODO: remove picture
                 }
 
                 return (false, null);

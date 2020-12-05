@@ -43,7 +43,7 @@ namespace ImageHubService.V2.Controllers
         }
 
         /// <summary>
-        /// Return user feed. Pass user id
+        /// Return user feed. Pass user id or "me"
         /// </summary>
         /// <returns>List of posts</returns>
         [HttpGet("user/{userId}")]

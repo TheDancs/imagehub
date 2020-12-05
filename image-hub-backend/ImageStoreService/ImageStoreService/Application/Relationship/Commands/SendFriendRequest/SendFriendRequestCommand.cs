@@ -8,7 +8,7 @@ using MediatR;
 
 namespace ImageHubService.Application.Relationship.Commands.SendFriendRequest
 {
-    public class SendFriendRequestCommand : IRequest
+    public class SendFriendRequestCommand : IRequest<bool>
     {
         public string FromUser { get; }
         public string ToUser { get; }
@@ -19,7 +19,7 @@ namespace ImageHubService.Application.Relationship.Commands.SendFriendRequest
             ToUser = toUser;
         }
 
-        public class Handler : IRequestHandler<SendFriendRequestCommand>
+        public class Handler : IRequestHandler<SendFriendRequestCommand, bool>
         {
             private readonly AppIdentityDbContext database;
 
@@ -28,22 +28,27 @@ namespace ImageHubService.Application.Relationship.Commands.SendFriendRequest
                 this.database = database;
             }
 
-            public async Task<Unit> Handle(SendFriendRequestCommand request, CancellationToken cancellationToken)
+            public async Task<bool> Handle(SendFriendRequestCommand request, CancellationToken cancellationToken)
             {
-                var exists = database.Relationships.Any(x =>
-                    (x.UserId1 == request.FromUser && x.UserId2 == request.ToUser) ||
-                    x.UserId1 == request.ToUser && x.UserId2 == request.FromUser);
-
-                if (!exists)
+                if (request.FromUser != request.ToUser)
                 {
-                    await database.FriendRequests.AddAsync(new FriendRequest()
-                    { Created = DateTime.UtcNow, FromId = request.FromUser, ToId = request.ToUser}, cancellationToken);
+                    var exists = database.Relationships.Any(x =>
+                        (x.UserId1 == request.FromUser && x.UserId2 == request.ToUser) ||
+                        x.UserId1 == request.ToUser && x.UserId2 == request.FromUser);
 
-                    await database.SaveChangesAsync(cancellationToken);
+                    if (!exists)
+                    {
+                        await database.FriendRequests.AddAsync(new FriendRequest()
+                            { Created = DateTime.UtcNow, FromId = request.FromUser, ToId = request.ToUser}, cancellationToken);
 
+                        await database.SaveChangesAsync(cancellationToken);
+
+                        return true;
+                    }
+                    
                 }
 
-                return Unit.Value;
+                return false;
             }
         }
     }

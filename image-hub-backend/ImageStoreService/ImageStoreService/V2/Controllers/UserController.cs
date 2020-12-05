@@ -4,10 +4,13 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using ImageHubService.Application.Relationship.Commands.AcceptFriendRequest;
 using ImageHubService.Application.Relationship.Commands.RejectFriendRequest;
+using ImageHubService.Application.Relationship.Commands.RemoveFriend;
 using ImageHubService.Application.Relationship.Commands.SendFriendRequest;
 using ImageHubService.Application.Relationship.Requests.GetFriendRequests;
+using ImageHubService.Application.Relationship.Requests.GetFriends;
 using ImageHubService.Application.User.Commands.AddUser;
 using ImageHubService.Application.User.Queries.GetUser;
+using ImageHubService.Application.User.Queries.SearchUsersByName;
 using ImageHubService.Common;
 using ImageHubService.V2.Models;
 using MediatR;
@@ -21,7 +24,6 @@ namespace ImageHubService.V2.Controllers
     [ApiController]
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    //TODO: implement in image hub service, create db schema 
     public class UserController : Controller
     {
         private readonly IMediator mediator;
@@ -39,7 +41,7 @@ namespace ImageHubService.V2.Controllers
         /// <response code="200">Returns user</response>
         /// <response code="400">If the user is not friend</response>   
         [HttpGet("{userId}")]
-        [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserSummaryModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetUser([FromRoute] string userId)
         {
@@ -54,9 +56,8 @@ namespace ImageHubService.V2.Controllers
             return Ok(result);
         }
 
-
         [HttpPost]
-        [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserSummaryModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddUser([FromBody] UserInputModel user)
         {
@@ -73,41 +74,45 @@ namespace ImageHubService.V2.Controllers
         }
 
         /// <summary>
-        /// Return friend requests
+        /// Returns user friends
         /// </summary>
-        /// <returns>List of friend requests</returns>
-        /// <response code="200">List of friend requests</response>
-        [HttpGet("friendrequests")]
-        [ProducesResponseType(typeof(IEnumerable<FriendRequest>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetFriendRequests()
+        /// <returns>Returns list of friends</returns>
+        /// <response code="200">Returns list of users</response>
+        [HttpGet("search/{name}")]
+        [ProducesResponseType(typeof(IEnumerable<UserMetaModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SearchUsersByName([FromRoute] string name)
         {
             var user = this.GetUserId();
 
-            return Ok(await mediator.Send(new GetFriendRequests(user)));
+            var result = await mediator.Send(new SearchByNameRequest(name, user));
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
         }
 
         /// <summary>
-        /// Accepts friend request
+        /// Returns user friends
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns>OK</returns>
-        /// <response code="200">Done</response>
-        /// <response code="400">Already accepted/or not found</response>   
-        [HttpPost("friendrequests/{id}/accept")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        /// <returns>Returns list of friends</returns>
+        /// <response code="200">Returns list of users</response>
+        [HttpGet("friends")]
+        [ProducesResponseType(typeof(UserSummaryModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AcceptFriendRequest([FromRoute] string id)
+        public async Task<IActionResult> GetFriends()
         {
             var user = this.GetUserId();
 
-            var result = await mediator.Send(new AcceptFriendRequestCommand(id, user));
-            if (result)
+            var result = await mediator.Send(new GetFriendsQuery(user));
+            if (result == null)
             {
-
-                return Ok();
+                return NotFound();
             }
 
-            return BadRequest();
+            return Ok(result);
         }
 
         /// <summary>
@@ -117,40 +122,20 @@ namespace ImageHubService.V2.Controllers
         /// <returns>OK</returns>
         /// <response code="200">Done</response>
         /// <response code="400">Already rejected/or not found</response>   
-        [HttpPost("friendrequests/{id}/reject")]
+        [HttpPost("{id}/unfriend")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RejectFriendRequest([FromRoute] string id)
+        public async Task<IActionResult> Unfriend([FromRoute] string id)
         {
             var user = this.GetUserId();
 
-            var result = await mediator.Send(new RejectFriendRequestCommand(id, user));
+            var result = await mediator.Send(new RemoveFriendCommand(user, id));
             if (result)
             {
-
                 return Ok();
             }
 
             return BadRequest();
         }
-
-        /// <summary>
-        /// Sends friend request
-        /// </summary>
-        /// <param name="toUserId"></param>
-        /// <returns>OK</returns>
-        /// <response code="200">Done</response>
-        /// <response code="400">Something happened</response>   
-        [HttpPost("{toUserId}/add")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SendFriendRequest([FromRoute] string toUserId)
-        {
-            var user = this.GetUserId();
-
-            var result = await mediator.Send(new SendFriendRequestCommand(user, toUserId));
-            return Ok();
-        }
-
     }
 }

@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace ImageHubService.V2.Models
 {
-    public class UserModel : UserMetaModel
+    public class LikeModel
     {
-        public string Email { get; set; }
+        public UserMetaModel User { get; }
     }
 }
