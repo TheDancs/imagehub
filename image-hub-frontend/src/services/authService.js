@@ -13,7 +13,7 @@ export default class AuthService {
       response_type: "code",
       scope: "openid profile imagehubapi.all",
       post_logout_redirect_uri: process.env.REACT_APP_LOGOFF_REDIRECT_URL,
-      automaticSilentRenew: false, //(boolean, default: false): Flag to indicate if there should be an automatic attempt to renew the access token prior to its expiration.
+      automaticSilentRenew: true, //(boolean, default: false): Flag to indicate if there should be an automatic attempt to renew the access token prior to its expiration.
       silent_redirect_uri: process.env.REACT_APP_SILENT_REDIRECT_URL, //(string): The URL for the page containing the code handling the silent renew.
       userStore: new WebStorageStateStore({ store: window.sessionStorage }),
     });
