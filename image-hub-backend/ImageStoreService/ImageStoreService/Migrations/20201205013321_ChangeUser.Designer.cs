@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImageHubService.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20201204141211_RemoveUsers")]
-    partial class RemoveUsers
+    [Migration("20201205013321_ChangeUser")]
+    partial class ChangeUser
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,15 +30,19 @@ namespace ImageHubService.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("From")
+                    b.Property<string>("FromId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("To")
+                    b.Property<string>("ToId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FromId");
+
+                    b.HasIndex("ToId");
 
                     b.ToTable("FriendRequests");
                 });
@@ -54,11 +58,13 @@ namespace ImageHubService.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Likes");
                 });
@@ -80,11 +86,33 @@ namespace ImageHubService.Migrations
 
                     b.Property<string>("UploaderId")
                         .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UploaderId");
+
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("ImageHubService.Domain.Entities.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfilePictureUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ImageHubService.Domain.Entities.UserRelationship", b =>
@@ -95,15 +123,34 @@ namespace ImageHubService.Migrations
 
                     b.Property<string>("UserId1")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserId2")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId1");
+
+                    b.HasIndex("UserId2");
+
                     b.ToTable("Relationships");
+                });
+
+            modelBuilder.Entity("ImageHubService.Domain.Entities.FriendRequest", b =>
+                {
+                    b.HasOne("ImageHubService.Domain.Entities.User", "From")
+                        .WithMany()
+                        .HasForeignKey("FromId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ImageHubService.Domain.Entities.User", "To")
+                        .WithMany()
+                        .HasForeignKey("ToId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ImageHubService.Domain.Entities.Like", b =>
@@ -111,6 +158,36 @@ namespace ImageHubService.Migrations
                     b.HasOne("ImageHubService.Domain.Entities.Post", "Post")
                         .WithMany("Likes")
                         .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ImageHubService.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ImageHubService.Domain.Entities.Post", b =>
+                {
+                    b.HasOne("ImageHubService.Domain.Entities.User", "Uploader")
+                        .WithMany("Posts")
+                        .HasForeignKey("UploaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ImageHubService.Domain.Entities.UserRelationship", b =>
+                {
+                    b.HasOne("ImageHubService.Domain.Entities.User", "User1")
+                        .WithMany()
+                        .HasForeignKey("UserId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ImageHubService.Domain.Entities.User", "User2")
+                        .WithMany()
+                        .HasForeignKey("UserId2")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

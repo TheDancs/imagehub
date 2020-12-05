@@ -1,22 +1,13 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using IdentityServer4.AccessTokenValidation;
-using ImageHubService.Application.User.Requests.GetUserById;
+using ImageHubService.Application.Feed.Requests.GetPrivateFeed;
 using ImageHubService.Config.Swagger;
-using ImageHubService.Domain.Entities;
 using ImageHubService.Domain.Repositories;
 using ImageHubService.Infrastructure.Repositories;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -87,7 +78,7 @@ namespace ImageHubService
 
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
 
-            services.AddMediatR(typeof(GetUserByIdCommand).Assembly);
+            services.AddMediatR(typeof(GetPrivateFeedRequest).Assembly);
             services.AddSingleton<IPictureRepo>(new BlobImageRepository(Configuration["BlobStorageConnectionString"],
                 Configuration["BlobStorageContainerName"]));
         }

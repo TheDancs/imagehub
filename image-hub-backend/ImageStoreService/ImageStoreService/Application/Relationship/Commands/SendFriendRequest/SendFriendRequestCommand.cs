@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,7 +37,7 @@ namespace ImageHubService.Application.Relationship.Commands.SendFriendRequest
                 if (!exists)
                 {
                     await database.FriendRequests.AddAsync(new FriendRequest()
-                    { Created = DateTime.UtcNow, From = request.FromUser, To = request.ToUser }, cancellationToken);
+                    { Created = DateTime.UtcNow, FromId = request.FromUser, ToId = request.ToUser}, cancellationToken);
 
                     await database.SaveChangesAsync(cancellationToken);
 

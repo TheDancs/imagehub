@@ -65,6 +65,8 @@ export const Feed = () => {
       });
   }, []);
 
+  AuthManager.getUser().then(user => console.log(user.access_token));
+
   const classes = useStyles();
   if (error) {
     return (

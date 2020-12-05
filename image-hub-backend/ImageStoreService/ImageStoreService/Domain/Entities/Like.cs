@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ImageHubService.Domain.Entities
 {
@@ -20,6 +17,9 @@ namespace ImageHubService.Domain.Entities
 
         [ForeignKey("PostId")]
         public Post Post { get; set; }
+
+        [ForeignKey("UserId")]
+        public User User { get; set; }
 
     }
 }

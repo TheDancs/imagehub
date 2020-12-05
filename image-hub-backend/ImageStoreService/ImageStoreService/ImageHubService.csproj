@@ -31,7 +31,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Application\User\Commands\" />
+	  <Folder Include="Application\User\Queries\SearchUsersByName\" />
 	</ItemGroup>
 
 

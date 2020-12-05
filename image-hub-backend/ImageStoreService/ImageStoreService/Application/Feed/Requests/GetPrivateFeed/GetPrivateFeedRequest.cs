@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ImageHubService.Application.Feed.Requests.GetUserFeed;
 using ImageHubService.Infrastructure.Repositories;
 using ImageHubService.V2.Models;
 using MediatR;
@@ -39,7 +37,7 @@ namespace ImageHubService.Application.Feed.Requests.GetPrivateFeed
                     .Where(x => x.UserId1 == request.UserId || x.UserId2 == request.UserId)
                     .Select(x => x.UserId1 == request.UserId ? x.UserId2 : x.UserId1).ToListAsync(cancellationToken);
 
-                var posts = await database.Posts.Where(x => friends.Contains(x.UploaderId))
+                var posts = await database.Posts.Include(x=>x.Uploader).Where(x => friends.Contains(x.UploaderId))
                     .Include(y => y.Likes)
                     .ToListAsync(cancellationToken);
 
@@ -50,7 +48,7 @@ namespace ImageHubService.Application.Feed.Requests.GetPrivateFeed
                     Likes = x.Likes.Count,
                     PictureUrl = $"{configuration["ApplicationBaseUrl"]}/api/v2.0/image/{x.PictureId}",
                     UploadTime = x.UploadTime,
-                    Uploader = new UserMetaModel() {Id = x.UploaderId, Name = "TODO"}
+                    Uploader = new UserMetaModel() {Id = x.UploaderId, Name = x.Uploader.Name}
                 }); //TODO: URL
             }
         }

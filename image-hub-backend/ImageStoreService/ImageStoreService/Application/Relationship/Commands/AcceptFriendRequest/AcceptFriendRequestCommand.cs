@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ImageHubService.Domain.Entities;
@@ -11,10 +9,12 @@ namespace ImageHubService.Application.Relationship.Commands.AcceptFriendRequest
 {
     public class AcceptFriendRequestCommand : IRequest<bool>
     {
+        public string UserId { get; }
         public string RequestId { get; }
 
-        public AcceptFriendRequestCommand(string requestId)
+        public AcceptFriendRequestCommand(string requestId, string userId)
         {
+            UserId = userId;
             RequestId = requestId;
         }
 
@@ -32,14 +32,17 @@ namespace ImageHubService.Application.Relationship.Commands.AcceptFriendRequest
                 var friendRequest = await database.FriendRequests.FindAsync(Guid.Parse(request.RequestId));
                 if (friendRequest != null)
                 {
-                    await database.Relationships.AddAsync(new UserRelationship()
-                        {UserId1 = friendRequest.From, UserId2 = friendRequest.To}, cancellationToken);
+                    if (friendRequest.FromId == request.UserId || request.UserId == friendRequest.ToId)
+                    {
+                        await database.Relationships.AddAsync(new UserRelationship()
+                            {UserId1 = friendRequest.FromId, UserId2 = friendRequest.ToId}, cancellationToken);
                     
-                    database.FriendRequests.Remove(friendRequest);
+                        database.FriendRequests.Remove(friendRequest);
 
-                    await database.SaveChangesAsync(cancellationToken);
+                        await database.SaveChangesAsync(cancellationToken);
 
-                    return true;
+                        return true;
+                    }
                 }
 
                 return false;

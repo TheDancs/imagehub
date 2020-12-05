@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using ImageHubService.Application.Feed.Requests.GetPrivateFeed;
 using ImageHubService.Application.Feed.Requests.GetUserFeed;
+using ImageHubService.Common;
 using ImageHubService.V2.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ImageHubService.V2.Controllers
 {
@@ -36,7 +37,7 @@ namespace ImageHubService.V2.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetPrivateFeed()
         {
-            var userId = this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value; //fb user id
+            var userId = this.GetUserId();
 
             return Ok(await mediator.Send(new GetPrivateFeedRequest(userId)));
         }
@@ -50,9 +51,9 @@ namespace ImageHubService.V2.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetUserProfileFeed([FromRoute] string userId)
         {
-            var user = this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value; //fb user id
+            var user = this.GetUserId();
 
-            return Ok(await mediator.Send(new GetUserFeedRequest(userId)));
+            return Ok(await mediator.Send(new GetUserFeedRequest(userId == "me" ? user : userId)));
         }
     }
 }

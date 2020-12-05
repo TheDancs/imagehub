@@ -3,46 +3,48 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ImageHubService.Migrations
 {
-    public partial class AddNewTables : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Email = table.Column<string>(nullable: true),
+                    ProfilePictureUrl = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "FriendRequests",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    From = table.Column<string>(nullable: false),
-                    To = table.Column<string>(nullable: false),
+                    FromId = table.Column<string>(nullable: false),
+                    ToId = table.Column<string>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FriendRequests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FriendRequests_AspNetUsers_From",
-                        column: x => x.From,
-                        principalTable: "AspNetUsers",
+                        name: "FK_FriendRequests_Users_FromId",
+                        column: x => x.FromId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_FriendRequests_AspNetUsers_To",
-                        column: x => x.To,
-                        principalTable: "AspNetUsers",
+                        name: "FK_FriendRequests_Users_ToId",
+                        column: x => x.ToId,
+                        principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Pictures",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    ContentType = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pictures", x => x.Id);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -59,17 +61,36 @@ namespace ImageHubService.Migrations
                 {
                     table.PrimaryKey("PK_Posts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Posts_Pictures_PictureId",
-                        column: x => x.PictureId,
-                        principalTable: "Pictures",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Posts_AspNetUsers_UploaderId",
+                        name: "FK_Posts_Users_UploaderId",
                         column: x => x.UploaderId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Relationships",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    UserId1 = table.Column<string>(nullable: false),
+                    UserId2 = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Relationships", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Relationships_Users_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Relationships_Users_UserId2",
+                        column: x => x.UserId2,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -88,24 +109,24 @@ namespace ImageHubService.Migrations
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_Likes_AspNetUsers_UserId",
+                        name: "FK_Likes_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_FriendRequests_From",
+                name: "IX_FriendRequests_FromId",
                 table: "FriendRequests",
-                column: "From");
+                column: "FromId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FriendRequests_To",
+                name: "IX_FriendRequests_ToId",
                 table: "FriendRequests",
-                column: "To");
+                column: "ToId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Likes_PostId",
@@ -118,14 +139,19 @@ namespace ImageHubService.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_PictureId",
-                table: "Posts",
-                column: "PictureId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Posts_UploaderId",
                 table: "Posts",
                 column: "UploaderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Relationships_UserId1",
+                table: "Relationships",
+                column: "UserId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Relationships_UserId2",
+                table: "Relationships",
+                column: "UserId2");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -137,10 +163,13 @@ namespace ImageHubService.Migrations
                 name: "Likes");
 
             migrationBuilder.DropTable(
+                name: "Relationships");
+
+            migrationBuilder.DropTable(
                 name: "Posts");
 
             migrationBuilder.DropTable(
-                name: "Pictures");
+                name: "Users");
         }
     }
 }

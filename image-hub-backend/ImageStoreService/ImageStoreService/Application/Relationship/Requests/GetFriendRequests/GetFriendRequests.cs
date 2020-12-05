@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,11 +30,12 @@ namespace ImageHubService.Application.Relationship.Requests.GetFriendRequests
 
             public async Task<IEnumerable<FriendRequest>> Handle(GetFriendRequests request, CancellationToken cancellationToken)
             {
-                return await database.FriendRequests.Where(x => x.To == request.UserId).Select(y => new FriendRequest()
-                {
-                    From = new UserMetaModel() {Id = y.From, Name = "TODO" }, Id = y.Id.ToString(),
-                    RequestTime = y.Created
-                }).ToListAsync(cancellationToken);
+                return await database.FriendRequests.Include(x => x.From).Where(x => x.ToId == request.UserId).Select(
+                    y => new FriendRequest()
+                    {
+                        From = new UserMetaModel() {Id = y.FromId, Name = y.From.Name}, Id = y.Id.ToString(),
+                        RequestTime = y.Created
+                    }).ToListAsync(cancellationToken);
             }
         }
     }

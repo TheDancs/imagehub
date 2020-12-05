@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,6 +34,7 @@ namespace ImageHubService.Application.Feed.Requests.GetUserFeed
             {
                 var posts = await database.Posts.Where(x => x.UploaderId == request.UserId)
                     .Include(y => y.Likes)
+                    .Include(x=>x.Uploader)
                     .ToListAsync(cancellationToken);
 
                 return posts.Select(x => new PostModel()
@@ -44,7 +44,7 @@ namespace ImageHubService.Application.Feed.Requests.GetUserFeed
                     Likes = x.Likes.Count,
                     PictureUrl = $"{configuration["ApplicationBaseUrl"]}/api/v2.0/image/{x.PictureId}",
                     UploadTime = x.UploadTime,
-                    Uploader = new UserMetaModel() { Id = x.UploaderId, Name = "TODO" }
+                    Uploader = new UserMetaModel() { Id = x.UploaderId, Name = x.Uploader.Name }
                 }); //TODO: URL
             }
         }

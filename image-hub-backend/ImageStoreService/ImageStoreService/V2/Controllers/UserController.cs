@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -7,8 +6,9 @@ using ImageHubService.Application.Relationship.Commands.AcceptFriendRequest;
 using ImageHubService.Application.Relationship.Commands.RejectFriendRequest;
 using ImageHubService.Application.Relationship.Commands.SendFriendRequest;
 using ImageHubService.Application.Relationship.Requests.GetFriendRequests;
-using ImageHubService.Application.User.Requests.FindUserByName;
-using ImageHubService.Application.User.Requests.GetUserById;
+using ImageHubService.Application.User.Commands.AddUser;
+using ImageHubService.Application.User.Queries.GetUser;
+using ImageHubService.Common;
 using ImageHubService.V2.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -43,14 +43,33 @@ namespace ImageHubService.V2.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetUser([FromRoute] string userId)
         {
-            var user = this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value; //fb user id
-            var result = await mediator.Send(new GetUserByIdCommand(userId == "me" ? user : userId, user));
+            var user = this.GetUserId();
+
+            var result = await mediator.Send(new GetUserByIdQuery(userId == "me" ? user : userId, user));
             if (result == null)
             {
                 return NotFound();
             }
 
             return Ok(result);
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(typeof(UserModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddUser([FromBody] UserInputModel user)
+        {
+            var userId = this.GetUserId();
+
+            if (user.Id != userId)
+            {
+                return BadRequest();
+            }
+
+            await mediator.Send(new AddUserCommand(user.Id, user.Name, user.Email, user.ProfilePictureUrl));
+
+            return Ok();
         }
 
         /// <summary>
@@ -62,7 +81,7 @@ namespace ImageHubService.V2.Controllers
         [ProducesResponseType(typeof(IEnumerable<FriendRequest>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetFriendRequests()
         {
-            var user = this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value; //fb user id
+            var user = this.GetUserId();
 
             return Ok(await mediator.Send(new GetFriendRequests(user)));
         }
@@ -79,9 +98,9 @@ namespace ImageHubService.V2.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AcceptFriendRequest([FromRoute] string id)
         {
-            var user = this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value; //fb user id
+            var user = this.GetUserId();
 
-            var result = await mediator.Send(new AcceptFriendRequestCommand(id));
+            var result = await mediator.Send(new AcceptFriendRequestCommand(id, user));
             if (result)
             {
 
@@ -103,9 +122,9 @@ namespace ImageHubService.V2.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RejectFriendRequest([FromRoute] string id)
         {
-            //var user = this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value; //fb user id
+            var user = this.GetUserId();
 
-            var result = await mediator.Send(new RejectFriendRequestCommand(id));
+            var result = await mediator.Send(new RejectFriendRequestCommand(id, user));
             if (result)
             {
 
@@ -127,27 +146,10 @@ namespace ImageHubService.V2.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SendFriendRequest([FromRoute] string toUserId)
         {
-            var user = this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value; //fb user id
+            var user = this.GetUserId();
 
             var result = await mediator.Send(new SendFriendRequestCommand(user, toUserId));
             return Ok();
-        }
-
-        /// <summary>
-        /// Search users by name
-        /// </summary>
-        /// <param name="name">Facebook user id or "me"</param>
-        /// <returns>Returns the specified user</returns>
-        /// <response code="200">Returns users</response>
-        /// <response code="400"></response>   
-        [HttpGet("search/{name}")]
-        [ProducesResponseType(typeof(IEnumerable<UserSearchResult>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SearchUsers([FromRoute] string name)
-        {
-            var user = this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value; //fb user id
-
-            return Ok(await mediator.Send(new FindUserByNameRequest(user, name)));
         }
 
     }

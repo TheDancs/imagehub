@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ImageHubService.Application.Post.Commands.UploadPost;
+using ImageHubService.Common;
 using ImageHubService.V2.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -36,7 +33,7 @@ namespace ImageHubService.V2.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> UploadImage([FromForm] ImageInputModel image)
         {
-            var user = this.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value; //fb user id
+            var user = this.GetUserId();
 
             var uploadResult = await mediator.Send(new UploadPostCommand(image.File, image.Description, user));
 

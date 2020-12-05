@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ImageHubService.V2.Models
+namespace ImageHubService.Domain.Entities
 {
-    public class UserModel
+    public class User
     {
+        [Key]
         public string Id { get; set; }
+
+        [Required]
         public string Name { get; set; }
+
         public string Email { get; set; }
         public string ProfilePictureUrl { get; set; }
-        public int Friends { get; set; }
-        public int Posts { get; set; }
-        public bool IsFriend { get; set; }
+
+        public ICollection<Post> Posts { get; set; }
     }
 }
