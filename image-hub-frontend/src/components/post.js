@@ -15,7 +15,7 @@ import Skeleton from "@material-ui/lab/Skeleton";
 
 export default function CreatePost(post) {
   return (
-    <Card maxWidth={450} marginbottom={15}>
+    <Card maxwidth={450} marginbottom={15} key={post.Id}>
       <CardHeader
         avatar={
           <Avatar src={post.profilPicture} />
