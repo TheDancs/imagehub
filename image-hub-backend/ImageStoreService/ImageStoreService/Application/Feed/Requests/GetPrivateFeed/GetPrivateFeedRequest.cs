@@ -37,7 +37,7 @@ namespace ImageHubService.Application.Feed.Requests.GetPrivateFeed
                     .Where(x => x.UserId1 == request.UserId || x.UserId2 == request.UserId)
                     .Select(x => x.UserId1 == request.UserId ? x.UserId2 : x.UserId1).ToListAsync(cancellationToken);
 
-                var posts = await database.Posts.Include(x=>x.Uploader).Where(x => friends.Contains(x.UploaderId))
+                var posts = await database.Posts.Include(x => x.Uploader).Where(x => friends.Contains(x.UploaderId) || x.UploaderId == request.UserId)
                     .Include(y => y.Likes)
                     .ToListAsync(cancellationToken);
 
@@ -48,7 +48,7 @@ namespace ImageHubService.Application.Feed.Requests.GetPrivateFeed
                     Likes = x.Likes.Count,
                     PictureUrl = $"{configuration["ApplicationBaseUrl"]}/api/v2.0/image/{x.PictureId}",
                     UploadTime = x.UploadTime,
-                    Uploader = new UserMetaModel() {Id = x.UploaderId, Name = x.Uploader.Name}
+                    Uploader = new UserMetaModel() { Id = x.UploaderId, Name = x.Uploader.Name }
                 }); //TODO: URL
             }
         }

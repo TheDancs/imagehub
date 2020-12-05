@@ -22,7 +22,7 @@ export default function CreatePost(post) {
         }
         title={post.uploaderName}
       />
-      <CardMedia height={0} paddingtop={"100.00%"} image={post.imageUrl} />
+      <CardMedia height={0} paddingtop={"100.00%"} image={post.pictureUrl} />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
           Uploaded:{post.postedDate}
