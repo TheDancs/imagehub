@@ -7,23 +7,26 @@ import CardActions from "@material-ui/core/CardActions";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import { red } from "@material-ui/core/colors";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import Skeleton from "@material-ui/lab/Skeleton";
 
+//@Todo: A Like számlálóhoz kell csinálni egy modalt, ami megjeleníti a lájkolókat
+//@Todo: Az feltöltő nevére húzott egérrel, megjelenik egy mini summary
+
 export default function CreatePost(post) {
   return (
-    <Card maxWidth={450} marginBottom={15}>
+    <Card maxWidth={450} marginbottom={15}>
       <CardHeader
         avatar={
-          <Avatar aria-label="recipe" backgroundColor={red[500]}>
-            {post.title ? post.title.charAt(0) : "A"}
-          </Avatar>
+          <Avatar src={post.profilPicture} />
         }
-        title={post.uploader.name}
+        title={post.uploaderName}
       />
-      <CardMedia height={0} paddingTop={"100.00%"} image={post.pictureUrl} />
+      <CardMedia height={0} paddingtop={"100.00%"} image={post.imageUrl} />
       <CardContent>
+        <Typography variant="body2" color="textSecondary" component="p">
+          Uploaded:{post.postedDate}
+        </Typography>
         <Typography variant="body2" color="textSecondary" component="p">
           {post.description}
         </Typography>
@@ -40,7 +43,7 @@ export default function CreatePost(post) {
 
 export function LoadingPost() {
   return (
-    <Card marginBottom={15}>
+    <Card marginbottom={15}>
       <CardHeader
         avatar={
           <Skeleton animation="wave" variant="circle" width={40} height={40} />
@@ -51,7 +54,7 @@ export function LoadingPost() {
             animation="wave"
             height={10}
             width="80%"
-            style={{ marginBottom: 6 }}
+            style={{ marginbottom: 6 }}
           />
         }
         subheader={<Skeleton animation="wave" height={10} width="40%" />}
@@ -62,7 +65,7 @@ export function LoadingPost() {
           variant="rect"
           width="100%"
           height={300}
-          paddingTop={"100.00%"}
+          paddingtop={"100.00%"}
         />
       }
 
@@ -72,7 +75,7 @@ export function LoadingPost() {
             <Skeleton
               animation="wave"
               height={10}
-              style={{ marginBottom: 6 }}
+              style={{ marginbottom: 6 }}
             />
             <Skeleton animation="wave" height={10} width="80%" />
           </React.Fragment>
