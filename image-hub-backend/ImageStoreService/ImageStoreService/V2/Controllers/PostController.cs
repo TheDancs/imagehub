@@ -9,6 +9,7 @@ using ImageHubService.Domain.Entities;
 using ImageHubService.V2.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImageHubService.V2.Controllers

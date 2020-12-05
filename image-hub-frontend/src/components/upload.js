@@ -9,6 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
+import { AuthManager } from "../providers/authProvider";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -51,25 +52,29 @@ export const Upload = () => {
     setLoading(true);
 
     const form = new FormData();
-    form.append("Title", userData.name);
     form.append("Description", description);
-    form.append("UploaderId", userData.userID);
     form.append("File", selectedFile);
 
-    axios({
-      method: "post",
-      url: "https://imagehub.azurewebsites.net/api/v1.0/Image",
-      data: form,
-    })
-      .then((data) => {
-        setOpen(true);
-        setResult(true);
-        setLoading(false);
+    AuthManager.getUser().then((user) => {
+      axios.defaults.headers.common["Authorization"] =
+        "Bearer " + user.access_token;
+      axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+      axios({
+        method: "post",
+        url: "https://imagehub.azurewebsites.net/api/v2.0/Post",
+        headers:{},
+        data: form,
       })
-      .catch((error) => {
-        setOpen(true);
-        setLoading(false);
-      });
+        .then((data) => {
+          setOpen(true);
+          setResult(true);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setOpen(true);
+          setLoading(false);
+        });
+    });
 
     e.preventDefault();
   };
@@ -97,14 +102,14 @@ export const Upload = () => {
           <form onSubmit={handleSubmit}>
             <h1 className={classes.container}> Upload an image</h1>
 
-            <p className={classes.center}>
+            <div className={classes.center}>
               <Input
                 className={classes.container}
                 placeholder="Description"
                 inputProps={{ "aria-label": "description" }}
                 onChange={(e) => setDescription(e.target.value)}
               />
-            </p>
+            </div>
 
             <input
               type="file"
@@ -139,4 +144,4 @@ export const Upload = () => {
       </Snackbar>
     </div>
   );
-}
+};

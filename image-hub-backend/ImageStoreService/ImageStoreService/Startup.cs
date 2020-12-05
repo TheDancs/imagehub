@@ -69,7 +69,10 @@ namespace ImageHubService
                     options.ApiSecret = Configuration["ImageHUBApiSecret"];
                 });
 
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("ImageHub", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().SetIsOriginAllowed((host) => true));
+            });
 
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlServer(
@@ -82,7 +85,7 @@ namespace ImageHubService
                 Configuration["BlobStorageContainerName"]));
 
             services.AddSingleton<IComputerVisionClient>(
-                new ComputerVisionClient(new ApiKeyServiceClientCredentials(Configuration["Vision"])));
+                new ComputerVisionClient(new ApiKeyServiceClientCredentials(Configuration["Vision"])) { Endpoint = Configuration["VisionEndpoint"] });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,7 +100,7 @@ namespace ImageHubService
 
             app.UseHttpsRedirection();
 
-            app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            app.UseCors("ImageHub");
 
             app.UseRouting();
 

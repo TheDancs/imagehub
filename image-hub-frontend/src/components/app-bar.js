@@ -18,7 +18,8 @@ import PublishIcon from "@material-ui/icons/Publish";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 
 import { SearchResult } from "./modals";
-import { Router } from "@material-ui/icons";
+import { AuthManager } from "../providers/authProvider";
+
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -98,6 +99,10 @@ export default function PrimarySearchAppBar(props) {
     handleMobileMenuClose();
   };
 
+  const handleLogout = () => {
+    AuthManager.logout();
+  }
+
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
@@ -117,7 +122,7 @@ export default function PrimarySearchAppBar(props) {
         <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       </Link>
       <Link to="#">
-        <MenuItem onClick={() => props.setIsLoggedIn(false)}>
+        <MenuItem onClick={handleLogout}>
           Kijelentkezés
         </MenuItem>
       </Link>
