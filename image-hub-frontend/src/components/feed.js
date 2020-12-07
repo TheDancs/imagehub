@@ -12,6 +12,8 @@ const useStyles = makeStyles((theme) => ({
     width: 450,
     marginRight: "auto",
     marginLeft: "auto",
+    marginbottom: '20px',
+    paddingBottom: '40px'
   },
   root: {
     maxWidth: 450,
@@ -74,11 +76,15 @@ export const Feed = () => {
   } else {
     return (
       <div className="main--content">
-        <div className={classes.container}>
+        
           {Posts.map((post) => {
-            return CreatePost(post);
+            return ( 
+              <div className={classes.container} key={post.id}>
+                 <CreatePost post={post} /> 
+                 </div>        
+            );
           })}
-        </div>
+        
       </div>
     );
   }

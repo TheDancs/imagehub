@@ -6,9 +6,13 @@ import Button from '@material-ui/core/Button';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import TextField from '@material-ui/core/TextField';
-import { FetchUrl, postData } from './profile';
+import { FetchUrl, postData, SendFriendRequest, Unfriend } from './profile';
 import { ShowInfo } from './alert';
-import { Avatar } from '@material-ui/core';
+import { Avatar, Typography } from '@material-ui/core';
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import IconButton from "@material-ui/core/IconButton";
+import { UnfoldMoreOutlined } from '@material-ui/icons';
+import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles((theme) => ({
   inputRoot: {
@@ -32,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
   btns: {
     position: 'relative',
+    maxwidth: 400,
     padding: theme.spacing(2),
   },
   searchIcon: {
@@ -47,12 +52,19 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    maxwidth:'400px',
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+    width: "400px"
+  },
+  likeButton: {
+    textalign: "left",
+    margin: 0,
+    justifyContent: "flex-start",
   },
 }));
 
@@ -66,9 +78,9 @@ function RejectRequest(id) {
 //@Todo: Url-ek beírása
 function AddOrRemoveFriend(id, remove) {
   if (remove)
-    postData("DeleteURL" + id);
-  else
-    postData("AddUrl" + id);
+  Unfriend(id);
+  else    
+    SendFriendRequest(id);
 }
 
 export function FriendRequests(requs = []) {
@@ -221,46 +233,65 @@ export function SearchResult() {
   const [open, setOpen] = React.useState(false);
   const [search_value, setSearchValue] = useState("");
   const [search_result, setSearchResult] = useState([]);
+  const [isLoaded, setIsloaded] = useState(false);
+  const [url, setUrl] = useState("https://imagehub.azurewebsites.net/api/v2.0/User/search/");
 
 
   const handleOpen = (event) => {
     var search_bar = document.getElementById("search_bar");
     if (event.key === "Enter") {
-      setSearchValue(search_bar.value);
-      Search(search_value)
-      var url = "https://imagehub.azurewebsites.net/api/v2.0/User/search/" + search_value;
+            setSearchValue(search_bar.value);
 
-      FetchUrl(url).then(result => setSearchResult(result)).catch(error => console.log(error));
-      setOpen(true);
+      setUrl("https://imagehub.azurewebsites.net/api/v2.0/User/search/" + search_bar.value);
+
+      if(!isLoaded)
+      FetchUrl(url).then(result => setSearchResult(result))
+      .catch(error => console.log(error))
+      .finally(() => {setIsloaded(true);setOpen(true);});
     }
 
   };
 
   const handleClose = () => {
     setOpen(false);
+    setIsloaded(false);
   };
 
   var content;
-  if (search_result.length > 0)
+  if(isLoaded && search_result.length===0)
+    content = ShowInfo("Result", "No result for '" + search_value + "'");
+
+  else if (!isLoaded)
+    content = "Loading...";
+  else
     content = (
       <>
         {search_result.map((friend) => {
           return (
-            <div>
-              <Avatar src={friend.profilePicture} />
-              {friend.name}
-              <Button onClick={AddOrRemoveFriend(friend.id, friend.isFriend)}>
+            <div key={friend.id}>
+               <Grid container spacing={3} xs={12} alignitems="center" justifycontent="flex-start">
+        <Grid item   >
+        <Avatar src={friend.profilePictureUrl} />
+       
+        </Grid>
+        <Grid item>
+        {friend.name}
+        </Grid>
+        <Grid container  xs={5} aligncontent="center" justifycontent="flex-end">
+          <Grid item >
+          <Button variant="outlined" onClick={()=> AddOrRemoveFriend(friend.id, friend.isFriend)}>
                 {friend.isFriend ? "Delete friend" : "Add friend"}
               </Button>
+          </Grid>
+        
+        </Grid>
+      </Grid>
             </div>
           );
         })
         }
       </>
     );
-  else
-    content = ShowInfo("Result", "No result for '" + search_value + "'");
-
   return (
     <div>
       <div className={classes.searchIcon}>
@@ -280,7 +311,7 @@ export function SearchResult() {
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
-        className={classes.modal}
+        className={classes.Modal}
         open={open}
         onClose={handleClose}
         closeAfterTransition
@@ -298,6 +329,82 @@ export function SearchResult() {
 
               </div>
             </div>
+          </div>
+        </Fade>
+      </Modal>
+    </div>
+  );
+}
+
+
+
+export function PostLikes(props){
+  
+  const vf_classes = useStyles();
+  const [open, setOpen] = useState(false);  
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  var body;
+  if (props.likes && props.likes.length > 0) {
+    body = (
+      <div>
+        <h2 id="simple-modal-title">People who liked</h2>
+        <div id="simple-modal-description">
+          {props.likes.map((like) => {
+            return (
+              <div>
+                <Avatar src={like.profilePictureUrl} />                
+                <Button variant="text">
+                {like.name}
+                </Button>
+              </div>
+            );
+          })
+          }
+        </div>
+      </div>
+    );
+  }
+  else {
+    body = (
+      <div>
+        <h2 id="simple-modal-title">People who liked</h2>
+        <div id="simple-modal-description">
+          {ShowInfo("No likes", "Nobody likes this.")}
+        </div>
+      </div>);
+  }
+  return (
+    <div>
+      
+      <Button className={vf_classes.likeButton} variant="text" onClick={()=>handleOpen()}>
+        <Typography variant="h6">
+        {props.likes.length.toString()}
+        </Typography>
+          
+        </Button>
+        
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={vf_classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <div className={vf_classes.paper}>
+            {body}
           </div>
         </Fade>
       </Modal>

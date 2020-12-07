@@ -11,6 +11,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import { ShowError, ShowInfo } from "./alert";
 import { AuthManager } from "../providers/authProvider";
+import CreatePost, { LoadingPost } from "./post";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -65,37 +66,54 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export function Profile(id) {
-  //ez nem tudom miért kell, de enélkül nem működik
-  if (typeof id != typeof string)
+export function Profile(args) {
+
+  const [posts, setPosts] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [error, setError] = useState(null);
+
+  var id;
+  if (args.location.search === "")
     id = "me";
+  else
+    id = args.location.search.replace("?", "");
 
   //lekérjük az adott id-hez tartozó feedet
-  var posts = GetUserPosts(id);
+  if(!isLoaded)
+  GetUserPosts(id)
+  .then(re => setPosts(re))
+  .catch(err => setError(err))
+  .finally(()=>setIsLoaded(true));
 
   //ez html formátumban a feed, vagy ha nincs mit betölteni, akkor egy hibaüzenet.
   var POSTS;
+  var PROFILESUMMARY = ProfileSummary(id);
 
-  if (posts != null && posts.length > 0)
-    POSTS = (
-      <>
-        <GridList cols="3" width="800">
-          {posts.map((post) => {
-            return (
-              RecipeReviewCard(post)
-            );
-          })}
-        </GridList>
-      </>
-    );
-
-  else
+  if(error || !posts || posts.length === 0)
+  {
     POSTS = (<> <div margin="20px"> {ShowInfo("No posts to show", "This user has not upload any post yet.")}</div> </>);
+  }
+  else if(!isLoaded)
+    POSTS = "Loading.";
+  else
+  POSTS = (
+    <>
+      <GridList cols="3" width="800" height="auto" spacing={3}>
+        {posts.map((post) => {
+          return (
+            <div key={post.id}>
+              <CreatePost post={post} />
+            </div>            
+          );
+        })}
+      </GridList>
+    </>
+  );
 
   return (
     <Container>
       <div>
-        {ProfileSummary(id)}
+        {PROFILESUMMARY}
         {POSTS}
       </div>
     </Container>
@@ -103,7 +121,7 @@ export function Profile(id) {
 }
 
 export function ProfileSummary(user_id) {
-  const url = "";
+  const url = "https://imagehub.azurewebsites.net/api/v2.0/User/" + user_id;
 
   const classes = useStyles();
 
@@ -115,135 +133,127 @@ export function ProfileSummary(user_id) {
 
   //Ha a saját profilunk kell.
   if (user_id === "me") {
-    if(!isLoaded)
-//@TODO: Erre kell vlami ami mindenféle adatot tartalmaz magunkról minimum név,kép,hánybarát,poszt,ill a barátoknak jelölés lista.
-      AuthManager.getUser()
-        .then(us => setUserSummary(us))
-        .catch(err => setError(err))
-        .finally(setIsLoaded(true));
-    else if(userSummary != null)
-      rqButton = (<><FriendRequests requs={userSummary.friendRequests}/></>);
+    rqButton = (<><FriendRequests /></>);
   }
   else {
+    if (userSummary != null) {
+      //Ha a barátunk
+      if (userSummary.isFriend) {
+        rqButton = (<Button onClick={() => Unfriend()} >Delete friend</Button>);
+      }
+      //ha nem a barátunk
+      else {
+        rqButton = (<Button onClick={() => SendFriendRequest()} >Send Friendrequest</Button>);
+      }
+    }
+  }
     //Ha még nem próbáltuk betölteni
     if (!isLoaded)
       FetchUrl(url)
         .then(res => setUserSummary(res))
         .catch(err => setError(err))
         .finally(() => setIsLoaded(true));
-    //Ha már be van töltve, és sikeresen
-    else if (userSummary != null) {
-      //Ha a barátunk
-      if (userSummary.isFriend) {
-        rqButton = (<Button onClick={Unfriend()} >Delete friend</Button>);
-      }
-      //ha nem a barátunk
-      else {
-        rqButton = (<Button onClick={SendFriendRequest()} >Send Friendrequest</Button>);
-      }
-    }
-  }
-  
-  //Ha valami hiba van, és nem sikerült a profilt betölteni.
-  if (error || userSummary == null) {
-    return (
-      <div className="main--content">
-        <div className={classes.container}>
-          {ShowError("Something went wrong", error?.message)}
+
+    //Ha valami hiba van, és nem sikerült a profilt betölteni.
+    if (error || userSummary == null) {
+      return (
+        <div className="main--content">
+          <div className={classes.container}>
+            {ShowError("Something went wrong", error?.message)}
+          </div>
         </div>
-      </div>
-    );
-  }
-  else if(!isLoaded){
-    //Talán később egy skeletont csinálhatnánk hozzá
-  }
-  //Ha betöltöttük 
-  else {
-    return (
-      <div className="main--content">
-        <Paper elevation={1} className="paper--profile" variant="elevation">
-          <Grid container spacing={5} justify="center" alignContent="center">
-            <Grid item >
-              <Avatar src={userSummary.profilPicture} className={classes.avatarProfile} />
-            </Grid>
-            <Grid item xs={12} sm container>
-              <Grid item container direction="column" alignItems="stretch" justify="center">
-                <Grid item xs>
-                  <Typography variant="h4">
-                    {userSummary.name}
+      );
+    }
+    else if (!isLoaded) {
+      //Talán később egy skeletont csinálhatnánk hozzá
+    }
+    //Ha betöltöttük 
+    else {
+      return (
+        <div className="main--content">
+          <Paper elevation={1} className="paper--profile" variant="elevation">
+            <Grid container spacing={5} justify="center" alignContent="center">
+              <Grid item >
+                <Avatar src={userSummary.profilePictureUrl} className={classes.avatarProfile} />
+              </Grid>
+              <Grid item xs={12} sm container>
+                <Grid item container direction="column" alignItems="stretch" justify="center">
+                  <Grid item xs>
+                    <Typography variant="h4">
+                      {userSummary.name}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs>
+                    <Typography variant="subtitle1" gutterBottom>
+                      {userSummary.numberOfPosts} Posts  |  {userSummary.numberOfFriends} Friends
                   </Typography>
-                </Grid>
-                <Grid item xs>
-                  <Typography variant="subtitle1" gutterBottom>
-                    {userSummary.posts} Posts  |  {userSummary.friends} Friends
-                  </Typography>
-                </Grid>
+                  </Grid>
 
 
-                <Grid item xs>
-                  <Grid container spacing={2}
-                    direction="row">
-                    <Grid item >
-                      <ViewFriends friendsList={userSummary.id} />
-                      
-                    </Grid>
-                    <Grid item>
-                      {rqButton}
+                  <Grid item xs>
+                    <Grid container spacing={2}
+                      direction="row">
+                      <Grid item >
+                        <ViewFriends friendsList={userSummary.id} />
+
+                      </Grid>
+                      <Grid item>
+                        {rqButton}
+                      </Grid>
                     </Grid>
                   </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </Paper>
-      </div>
-    );
+          </Paper>
+        </div>
+      );
+    }
+
+
+  }
+
+  //@TODO: Ezeket a linkeket megírni.
+ export async function Unfriend(id) {
+    var url = "https://imagehub.azurewebsites.net/api/v2.0/User/"+id+"/unfriend";
+    await postData(url);
+  }
+
+ export async function SendFriendRequest(id) {
+    var url = "https://imagehub.azurewebsites.net/api/v2.0/FriendRequest/send/"+id;
+    await postData(url);
+  }
+
+  export function GetUserPosts(userid) {
+    var feedUrl = "https://imagehub.azurewebsites.net/api/v2.0/Feed/user/" + userid;
+    var feed = FetchUrl(feedUrl).catch(err => console.log(err));
+    return feed;
   }
 
 
-}
+  export async function FetchUrl(url) {
+    const user = await AuthManager.getUser();
 
-//@TODO: Ezeket a linkeket megírni.
-async function Unfriend(id){
-  var url = "";
-  await postData(url);
-}
+    const respon = await fetch(url, { headers: { 'Authorization': "Bearer " + user.access_token } });
 
-async function SendFriendRequest(id){
-  var url = "";
-  await postData(url);
-}
-
-export function GetUserPosts(userid) {
-  var feedUrl = "https://imagehub.azurewebsites.net/api/v2.0/Feed/user/" + userid;
-  var feed = FetchUrl(feedUrl).catch(err => console.log(err));
-  return feed;
-}
-
-
-export async function FetchUrl(url) {
-  const user = await AuthManager.getUser();
-
-  const respon = await fetch(url, { headers: { 'Authorization': "Bearer " + user.access_token } });
-
-  if (!respon.ok) {
-    if (respon.status === 401)
-      throw new Error('You are not logged in.');
-    throw new Error('Unknown error (Something wrong with the network response).');
+    if (!respon.ok) {
+      if (respon.status === 401)
+        throw new Error('You are not logged in.');
+      throw new Error('Unknown error (Something wrong with the network response).');
+    }
+    else {
+      var ansf = respon.json();
+      return ansf;
+    }
   }
-  else {
-    var ansf = respon.json();
-    return ansf;
+
+  export async function postData(url) {
+    var token;
+    await AuthManager.getUser().then(user => token = user.access_token)
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Authorization': "Bearer " + token },   
+    });
+    return response.status; // parses JSON response into native JavaScript objects
   }
-}
-
-export async function postData(url) {
-  var token;
-  await AuthManager.getUser().then(user => token = user.access_token)
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers:{'Authorization': "Bearer " + token }
-  });
-  return response.json(); // parses JSON response into native JavaScript objects
-}

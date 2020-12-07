@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -9,37 +9,95 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import Skeleton from "@material-ui/lab/Skeleton";
+import { FetchUrl, postData } from './profile';
+import { PostLikes } from "./modals";
+import { AuthManager } from "../providers/authProvider";
+import { Button, Grid, Link } from "@material-ui/core";
 
 //@Todo: A Like számlálóhoz kell csinálni egy modalt, ami megjeleníti a lájkolókat
 //@Todo: Az feltöltő nevére húzott egérrel, megjelenik egy mini summary
 
-export default function CreatePost(post) {
+export default function CreatePost(args) {
+
+  const url = "https://imagehub.azurewebsites.net/api/v2.0/Post/" + args.post.id + "/likes";
+  const [likes, setLikes] = useState([]);
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [liked, setLiked] = useState(false);
+
+  if (!isLoaded) {
+    FetchUrl(url)
+      .then(res => { setLikes(res); })
+      .catch(err => setError(err))
+      .finally(setIsLoaded(true));
+  }
+  else {
+    AuthManager.getUser().then(user => { setLiked(likes.includes(user.id)) })
+  }
+
   return (
-    <Card maxwidth={450} marginbottom={15} key={post.Id}>
+    <Card maxwidth={500} marginbottom={15} key={args.post.Id}>
       <CardHeader
         avatar={
-          <Avatar src={post.profilPicture} />
+          <Avatar src={args.post.uploader.profilePictureUrl} />
         }
-        title={post.uploaderName}
+        title={<Link color="inherit" variant="h6"  href={"/Profile?" + args.post.uploader.id}>
+              {args.post.uploader.name}     
+          </Link>}
       />
-      <CardMedia height={0} paddingtop={"100.00%"} image={post.pictureUrl} />
+      <CardMedia>
+        <img height={400} paddingtop="60.0%" src={args.post.pictureUrl}></img>
+      </CardMedia>
+      
+
+      
+
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          Uploaded:{post.postedDate}
+          Uploaded:{args.post.uploadTime}
         </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {post.description}
+        <Typography variant="subtitle1" color="textPrimary" component="p">
+          {args.post.description}
         </Typography>
       </CardContent>
-      <CardActions>
-        <IconButton aria-label="Likes">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="People who liked">{post.likes}</IconButton>
+
+      <CardActions >
+        <Grid container direction="row" justify="flex-start" alignItems="center">
+          <Grid item>
+            <IconButton aria-label="Likes" onClick={() => LikePost(args.post.id, liked, setLiked)}>
+              <FavoriteIcon fontSize="large" color={liked ? 'secondary' : 'inherit'} />
+            </IconButton>
+          </Grid>
+          <Grid item>
+            <PostLikes likes={likes} numberOfLikes={args.post.like} />
+          </Grid>
+        </Grid>
+        
       </CardActions>
+
     </Card>
   );
 }
+
+function LikePost(id, liked, setLiked) {
+  if (id && id.toString().length > 20) {
+    if (!liked) {
+      var url = "https://imagehub.azurewebsites.net/api/v2.0/Post/" + id + "/like";
+    }
+
+    else {
+      var url = "https://imagehub.azurewebsites.net/api/v2.0/Post/" + id + "/unlike";
+    }
+
+    if (postData(url) === 200) {
+      setLiked(!liked);
+    }
+    else {
+      //Error page
+    }
+  }
+
+};
 
 export function LoadingPost() {
   return (
@@ -69,7 +127,7 @@ export function LoadingPost() {
         />
       }
 
-      <CardContent width={400}>
+      <CardContent width={500}>
         {
           <React.Fragment>
             <Skeleton
