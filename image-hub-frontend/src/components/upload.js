@@ -1,5 +1,4 @@
-import React, { useContext, useState } from "react";
-import UserDataContext from "../context/UserDataContext";
+import React, { useState } from "react";
 import axios from "axios";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -44,7 +43,6 @@ export const Upload = () => {
   const [open, setOpen] = useState(false);
   const [result, setResult] = useState(false);
 
-  const userData = useContext(UserDataContext);
   const [description, setDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
 

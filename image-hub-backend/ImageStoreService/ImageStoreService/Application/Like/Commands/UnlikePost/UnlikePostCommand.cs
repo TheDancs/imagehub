@@ -29,7 +29,7 @@ namespace ImageHubService.Application.Like.Commands.UnlikePost
 
             public async Task<bool> Handle(UnlikePostCommand request, CancellationToken cancellationToken)
             {
-                if (Guid.TryParse(request.PostId, out var postId) && await database.Posts.AnyAsync(x => x.Id == postId, cancellationToken: cancellationToken))
+                if (Guid.TryParse(request.PostId, out var postId))
                 {
                     var result = await database.Likes.FirstOrDefaultAsync(x => x.PostId == postId && x.UserId == request.UserId, cancellationToken);
                     if (result != null)

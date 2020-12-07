@@ -32,7 +32,7 @@ namespace ImageHubService.V2.Controllers
         /// </summary>
         /// <param name="image"></param>
         /// <returns>OK</returns>
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(UploadResultModel), 200)]

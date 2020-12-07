@@ -12,14 +12,14 @@ namespace ImageHubService.Application.Like.Requests.GetLikes
 {
     public class GetLikesRequest : IRequest<IEnumerable<LikeModel>>
     {
-        public string PostId { get;}
+        public string PostId { get; }
 
         public GetLikesRequest(string postId)
         {
             PostId = postId;
         }
 
-        public class Handler: IRequestHandler<GetLikesRequest, IEnumerable<LikeModel>>
+        public class Handler : IRequestHandler<GetLikesRequest, IEnumerable<LikeModel>>
         {
             private readonly AppIdentityDbContext database;
 
@@ -32,10 +32,9 @@ namespace ImageHubService.Application.Like.Requests.GetLikes
             {
                 if (Guid.TryParse(request.PostId, out var postId))
                 {
-                    return await database.Likes.Include(x => x.User).Where(x => x.PostId == postId)
-                        .Select(x => new LikeModel()
-                            {User = {Name = x.User.Name, Id = x.UserId, ProfilePictureUrl = x.User.ProfilePictureUrl}})
-                        .ToListAsync(cancellationToken);
+                    return await database.Likes.Where(x => x.PostId == postId).Include(x => x.User).Select(x => new LikeModel()
+                    { User = new UserMetaModel() { Name = x.User.Name, Id = x.User.Id, ProfilePictureUrl = x.User.ProfilePictureUrl } })
+                         .ToListAsync(cancellationToken);
                 }
 
                 return new List<LikeModel>();

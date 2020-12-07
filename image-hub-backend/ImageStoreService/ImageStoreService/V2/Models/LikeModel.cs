@@ -7,6 +7,6 @@ namespace ImageHubService.V2.Models
 {
     public class LikeModel
     {
-        public UserMetaModel User { get; }
+        public UserMetaModel User { get; set; }
     }
 }

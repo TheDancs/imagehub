@@ -9,7 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import Skeleton from "@material-ui/lab/Skeleton";
-import { FetchUrl, postData } from './profile';
+import { FetchUrl, postData } from "./profile";
 import { PostLikes } from "./modals";
 import { AuthManager } from "../providers/authProvider";
 import { Button, Grid, Link } from "@material-ui/core";
@@ -18,8 +18,10 @@ import { Button, Grid, Link } from "@material-ui/core";
 //@Todo: Az feltöltő nevére húzott egérrel, megjelenik egy mini summary
 
 export default function CreatePost(args) {
-
-  const url = "https://imagehub.azurewebsites.net/api/v2.0/Post/" + args.post.id + "/likes";
+  const url =
+    "https://imagehub.azurewebsites.net/api/v2.0/Post/" +
+    args.post.id +
+    "/likes";
   const [likes, setLikes] = useState([]);
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -27,54 +29,73 @@ export default function CreatePost(args) {
 
   if (!isLoaded) {
     FetchUrl(url)
-      .then(res => { setLikes(res); })
-      .catch(err => setError(err))
+      .then((res) => {
+        setLikes(res);
+      })
+      .catch((err) => setError(err))
       .finally(setIsLoaded(true));
-  }
-  else {
-    AuthManager.getUser().then(user => { setLiked(likes.includes(user.id)) })
+  } else {
+    AuthManager.getUser().then((user) => {
+      setLiked(likes.includes(user.id));
+    });
   }
 
   return (
     <Card maxwidth={500} marginbottom={15} key={args.post.Id}>
       <CardHeader
-        avatar={
-          <Avatar src={args.post.uploader.profilePictureUrl} />
+        avatar={<Avatar src={args.post.uploader.profilePictureUrl} />}
+        title={
+          <Link
+            color="inherit"
+            variant="h6"
+            href={"/Profile?" + args.post.uploader.id}
+          >
+            {args.post.uploader.name}
+          </Link>
         }
-        title={<Link color="inherit" variant="h6"  href={"/Profile?" + args.post.uploader.id}>
-              {args.post.uploader.name}     
-          </Link>}
       />
-      <CardMedia>
-        <img height={400} paddingtop="60.0%" src={args.post.pictureUrl}></img>
-      </CardMedia>
-      
-
-      
-
+       <CardMedia
+          component="img"
+          height="450"
+          image={args.post.pictureUrl}
+        />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          Uploaded:{args.post.uploadTime}
+          Uploaded:  
+          {new Intl.DateTimeFormat("hu-HU", {
+            year: "numeric",
+            month: "long",
+            day: "2-digit",
+          }).format(new Date(args.post.uploadTime))}
         </Typography>
         <Typography variant="subtitle1" color="textPrimary" component="p">
           {args.post.description}
         </Typography>
       </CardContent>
 
-      <CardActions >
-        <Grid container direction="row" justify="flex-start" alignItems="center">
+      <CardActions>
+        <Grid
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="center"
+        >
           <Grid item>
-            <IconButton aria-label="Likes" onClick={() => LikePost(args.post.id, liked, setLiked)}>
-              <FavoriteIcon fontSize="large" color={liked ? 'secondary' : 'inherit'} />
+            <IconButton
+              aria-label="Likes"
+              onClick={() => LikePost(args.post.id, liked, setLiked)}
+            >
+              <FavoriteIcon
+                fontSize="large"
+                color={liked ? "secondary" : "inherit"}
+              />
             </IconButton>
           </Grid>
           <Grid item>
             <PostLikes likes={likes} numberOfLikes={args.post.like} />
           </Grid>
         </Grid>
-        
       </CardActions>
-
     </Card>
   );
 }
@@ -82,22 +103,20 @@ export default function CreatePost(args) {
 function LikePost(id, liked, setLiked) {
   if (id && id.toString().length > 20) {
     if (!liked) {
-      var url = "https://imagehub.azurewebsites.net/api/v2.0/Post/" + id + "/like";
-    }
-
-    else {
-      var url = "https://imagehub.azurewebsites.net/api/v2.0/Post/" + id + "/unlike";
+      var url =
+        "https://imagehub.azurewebsites.net/api/v2.0/Post/" + id + "/like";
+    } else {
+      var url =
+        "https://imagehub.azurewebsites.net/api/v2.0/Post/" + id + "/unlike";
     }
 
     if (postData(url) === 200) {
       setLiked(!liked);
-    }
-    else {
+    } else {
       //Error page
     }
   }
-
-};
+}
 
 export function LoadingPost() {
   return (

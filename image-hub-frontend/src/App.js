@@ -2,11 +2,8 @@ import React, { Component } from "react";
 import "./App.css";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { blue } from "@material-ui/core/colors";
-import { Login } from "./components/login";
 import { Routes } from "./Routes";
 import { BrowserRouter } from "react-router-dom";
-import PrimarySearchAppBar from "./components/app-bar";
-import UserDataContext from "./context/UserDataContext";
 import { AuthProvider } from "./providers/authProvider";
 
 const styles = {};

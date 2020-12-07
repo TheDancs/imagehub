@@ -181,9 +181,6 @@ export default function PrimarySearchAppBar(props) {
             </div>
             <div className={classes.search}>
               <SearchResult />
-              {
-                //itt volt e
-              }
             </div>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>

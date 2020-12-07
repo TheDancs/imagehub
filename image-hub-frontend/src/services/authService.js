@@ -1,4 +1,3 @@
-import { IDENTITY_CONFIG, METADATA_OIDC } from "../utils/authConst";
 import { UserManager, WebStorageStateStore, Log } from "oidc-client";
 import axios from "axios";
 

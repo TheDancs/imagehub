@@ -31,7 +31,8 @@ namespace ImageHubService.Application.Like.Commands.LikePost
 
             public async Task<bool> Handle(LikePostCommand request, CancellationToken cancellationToken)
             {
-                if (Guid.TryParse(request.PostId, out var postId) && await database.Posts.AnyAsync(x => x.Id == postId && x.UploaderId != request.UserId, cancellationToken: cancellationToken))
+                if (Guid.TryParse(request.PostId, out var postId) &&
+                !await database.Likes.AnyAsync(x => x.PostId == postId && x.UserId == request.UserId, cancellationToken: cancellationToken))
                 {
                     await database.Likes.AddAsync(new Domain.Entities.Like()
                     { PostId = postId, UserId = request.UserId }, cancellationToken);
