@@ -48,7 +48,7 @@ namespace ImageHubService.Application.Feed.Requests.GetPrivateFeed
                     Likes = x.Likes.Count,
                     PictureUrl = $"{configuration["ApplicationBaseUrl"]}/api/v2.0/image/{x.PictureId}",
                     UploadTime = x.UploadTime,
-                    Uploader = new UserMetaModel() { Id = x.UploaderId, Name = x.Uploader.Name }
+                    Uploader = new UserMetaModel() { Id = x.UploaderId, Name = x.Uploader.Name, ProfilePictureUrl = x.Uploader.ProfilePictureUrl}
                 });
             }
         }

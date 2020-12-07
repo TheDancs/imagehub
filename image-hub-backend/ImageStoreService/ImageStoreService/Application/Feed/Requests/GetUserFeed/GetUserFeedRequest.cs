@@ -34,7 +34,7 @@ namespace ImageHubService.Application.Feed.Requests.GetUserFeed
             {
                 var posts = await database.Posts.Where(x => x.UploaderId == request.UserId)
                     .Include(y => y.Likes)
-                    .Include(x=>x.Uploader)
+                    .Include(x => x.Uploader)
                     .ToListAsync(cancellationToken);
 
                 return posts.Select(x => new PostModel()
@@ -44,7 +44,7 @@ namespace ImageHubService.Application.Feed.Requests.GetUserFeed
                     Likes = x.Likes.Count,
                     PictureUrl = $"{configuration["ApplicationBaseUrl"]}/api/v2.0/image/{x.PictureId}",
                     UploadTime = x.UploadTime,
-                    Uploader = new UserMetaModel() { Id = x.UploaderId, Name = x.Uploader.Name }
+                    Uploader = new UserMetaModel() { Id = x.UploaderId, Name = x.Uploader.Name, ProfilePictureUrl = x.Uploader.ProfilePictureUrl }
                 }); //TODO: URL
             }
         }
