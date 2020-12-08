@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function PrimarySearchAppBar(props) {
+export const PrimarySearchAppBar = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [friendRequest, setFriendRequest] = useState([]);
   const [profilePicture, setProfilePicture] = useState(null);
@@ -222,10 +222,7 @@ export default function PrimarySearchAppBar(props) {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <Avatar
-                src={profilePicture}
-                className={classes.small}
-              />
+              <Avatar src={profilePicture} className={classes.small} />
             </IconButton>
           </div>
           <div className={classes.sectionMobile}>
@@ -245,4 +242,4 @@ export default function PrimarySearchAppBar(props) {
       {renderMenu}
     </div>
   );
-}
+};

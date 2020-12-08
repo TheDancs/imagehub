@@ -30,7 +30,7 @@ namespace ImageHubService.Application.Relationship.Requests.GetFriendRequests
 
             public async Task<IEnumerable<FriendRequest>> Handle(GetFriendRequests request, CancellationToken cancellationToken)
             {
-                return await database.FriendRequests.Include(x => x.From).Where(x => x.ToId == request.UserId).Select(
+                return await database.FriendRequests.Where(x => x.ToId == request.UserId).Include(x => x.From).Select(
                     y => new FriendRequest()
                     {
                         From = new UserMetaModel() {Id = y.FromId, Name = y.From.Name}, Id = y.Id.ToString(),

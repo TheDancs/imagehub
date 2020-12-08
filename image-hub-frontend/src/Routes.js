@@ -8,11 +8,10 @@ import { Logout } from "./components/auth/logout";
 import { LogoutCallback } from "./components/auth/logoutCallback";
 import { PrivateRoute } from "./routes/privateRoute";
 import { SilentRenew } from "./components/auth/silentRenew";
-import PrimarySearchAppBar from "./components/app-bar";
+import { PrimarySearchAppBar } from "./components/app-bar";
 
 export const Routes = (
   <div>
-
     <PrimarySearchAppBar />
 
     <Switch>
