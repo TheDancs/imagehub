@@ -11,14 +11,16 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import { ShowError, ShowInfo } from "./alert";
 import { AuthManager } from "../providers/authProvider";
-import CreatePost, { LoadingPost } from "./post";
+import CreatePerosnalPost, { LoadingPost,  } from "./post";
 
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    width: 450,
-    marginRight: "auto",
-    marginLeft: "auto",
+    width: '100%',
+    marginRight: 'auto',
+    marginLeft: 'auto',
+    marginbottom: '20px',
+    paddingBottom: '40px'
   },
   root: {
     maxWidth: 450,
@@ -63,16 +65,21 @@ const useStyles = makeStyles((theme) => ({
       height: theme.spacing(16),
     },
   },
+  gridList: {
+    width: '100%',
+    height: '100%',
+  },
 }));
 
 
 export function Profile(args) {
-
+  const classes = useStyles();
   const [posts, setPosts] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(null);
-
+  
   var id;
+
   if (args.location.search === "")
     id = "me";
   else
@@ -98,11 +105,11 @@ export function Profile(args) {
   else
   POSTS = (
     <>
-      <GridList cols="3" width="800" height="auto" spacing={3}>
+      <GridList cols={3.5} spacing={3} cellHeight={'100%'} className={classes.gridList}>
         {posts.map((post) => {
           return (
-            <div key={post.id}>
-              <CreatePost post={post} />
+            <div className={classes.container} key={post.id}>
+              <CreatePerosnalPost post={post} />
             </div>            
           );
         })}
@@ -114,7 +121,10 @@ export function Profile(args) {
     <Container>
       <div>
         {PROFILESUMMARY}
+        <div className={classes.container}>
         {POSTS}
+        </div>
+        
       </div>
     </Container>
   );
@@ -128,11 +138,15 @@ export function ProfileSummary(user_id) {
   const [userSummary, setUserSummary] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(null);
+  const [myId, setMyId] = useState(null);
+
+  if(myId == null)
+  AuthManager.getUser().then(i => setMyId(i.profile.sub)).catch(er => setError(er))
 
   var rqButton;
 
   //Ha a saját profilunk kell.
-  if (user_id === "me") {
+  if (user_id === "me" || user_id === myId) {
     rqButton = (<><FriendRequests /></>);
   }
   else {
