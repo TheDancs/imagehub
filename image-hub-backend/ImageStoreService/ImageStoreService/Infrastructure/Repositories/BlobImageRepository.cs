@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
@@ -35,7 +33,6 @@ namespace ImageHubService.Infrastructure.Repositories
             {
 
                 var result = await blobClient.UploadAsync(imageStream, new BlobHttpHeaders() { ContentType = contentType }, conditions: null);
-                imageStream.Close();
                 return true;
             }
             catch (Exception e)

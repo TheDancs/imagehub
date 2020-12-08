@@ -1,8 +1,9 @@
-using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Azure.Identity;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
 
 namespace ImageHubService
 {
@@ -25,6 +26,19 @@ namespace ImageHubService
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                    var keyVaultClient = new KeyVaultClient(
+                        new KeyVaultClient.AuthenticationCallback(
+                            azureServiceTokenProvider.KeyVaultTokenCallback));
+
+                    config.AddAzureKeyVault(
+                        $"https://imagehubservicevault.vault.azure.net/",
+                        keyVaultClient,
+                        new DefaultKeyVaultSecretManager());
+
                 });
     }
 }

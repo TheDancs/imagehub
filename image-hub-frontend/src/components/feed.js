@@ -1,114 +1,91 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { red } from "@material-ui/core/colors";
+import CreatePost, { LoadingPost } from "./post";
+import { ShowError, ShowInfo } from "./alert";
+import { FetchUrl } from "./profile";
 
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-
-const url = "https://imagehub.azurewebsites.net/api/v1.0/Image/list";
+const url = "https://imagehub.azurewebsites.net/api/v2.0/Feed";
 
 const useStyles = makeStyles((theme) => ({
-    container:{
-        width: 450,
-        marginRight: "auto",
-        marginLeft: "auto",
-    },
-    root: {
-        maxWidth: 450,
-        marginBottom: 15,
-    },
-    media: {
-        height: 0,
-        paddingTop: '100.00%', // 16:9
-    },
-    expand: {
-        transform: 'rotate(0deg)',
-        marginLeft: 'auto',
-        transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),
-    },
-    expandOpen: {
-        transform: 'rotate(180deg)',
-    },
-    avatar: {
-        backgroundColor: red[500],
-    },
+  container: {
+    width: 450,
+    marginRight: "auto",
+    marginLeft: "auto",
+    marginbottom: '20px',
+    paddingBottom: '40px'
+  },
+  root: {
+    maxWidth: 450,
+    marginbottom: 15,
+  },
+  media: {
+    height: 0,
+    paddingtop: "100.00%", // 16:9
+  },
+  expand: {
+    transform: "rotate(0deg)",
+    marginLeft: "auto",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  expandOpen: {
+    transform: "rotate(180deg)",
+  },
+  avatar: {
+    backgroundColor: red[500],
+  },
 }));
 
+export const Feed = () => {
+  const [isLoaded, setIsLoaded] = useState(null);
+  const [error, setError] = useState(false);
+  const [Posts, setPosts] = useState(null);
 
-export function Feed() {
+  if (!isLoaded)
+    FetchUrl(url)
+      .then(posts => setPosts(posts) )
+      .catch(err =>  setError(err) )
+      .finally(() => setIsLoaded(true));
 
-    const [Posts, setPosts] = useState([]);
-    const [error, setError] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);
-
-    useEffect(() => {
-        fetch(url)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          setIsLoaded(true);
-          setPosts(result);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-        }
-      )
-  }, [])
   const classes = useStyles();
-
   if (error) {
-    return <div className="main--content">Error: {error.message}</div>;
+    return (
+      <div className="main--content">
+        <div className={classes.container}>
+          {ShowError("Couldn't load feed", error.toString())}
+        </div>
+      </div>
+    );
   } else if (!isLoaded) {
-    return <div className="main--content">Loading...</div>;
+    return (
+      <div className="main--content">
+        <div className={classes.container}>{LoadingPost()}</div>
+        <div className={classes.container}>{LoadingPost()}</div>
+        <div className={classes.container}>{LoadingPost()}</div>
+      </div>
+    );
+  } else if (Posts.length === 0) {
+    return (
+      <div className="main--content">
+        <div className={classes.container}>
+          {ShowInfo("No posts at this moment", "There is nothing to see here.")}
+        </div>
+      </div>);
   } else {
     return (
+      <div className="main--content">
         
-        <div className="main--content">
-            <p className={classes.container}>
-            {Posts.map((post) => {
-                return (
-                    <Card className={classes.root}>
-                        <CardHeader
-                            avatar={
-                                <Avatar aria-label="recipe" className={classes.avatar}>
-                                    {(post.title ? post.title.charAt(0) : "A")}
-                                </Avatar>
-                            }
-                            title={post.title}
-                        />
-                        <CardMedia
-                            className={classes.media}
-                            image={post.pictureUrl}
-                        />
-                        <CardContent>
-                            <Typography variant="body2" color="textSecondary" component="p">
-                                {post.description}
-                            </Typography>
-                        </CardContent>
-                        <CardActions disableSpacing>
-                            <IconButton aria-label="add to favorites">
-                                <FavoriteIcon />
-                            </IconButton>
-
-                        </CardActions>
-                    </Card>
-                );
-            }
-
-            )
-            }
-            </p>
-           
-        </div>
-    )
-}}
+          {Posts.map((post) => {
+            return ( 
+              <div className={classes.container} key={post.id}>
+                 <CreatePost post={post} /> 
+                 </div>        
+            );
+          })}
+        
+      </div>
+    );
+  }
+}

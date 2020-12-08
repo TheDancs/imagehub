@@ -1,5 +1,4 @@
-import React, { useContext, useState } from "react";
-import UserDataContext from "../context/UserDataContext";
+import React, { useState } from "react";
 import axios from "axios";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -9,6 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
+import { AuthManager } from "../providers/authProvider";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function Upload() {
+export const Upload = () => {
   const classes = useStyles();
 
   const [loading, setLoading] = useState(false);
@@ -43,8 +43,6 @@ export function Upload() {
   const [open, setOpen] = useState(false);
   const [result, setResult] = useState(false);
 
-  const userData = useContext(UserDataContext);
-  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -52,25 +50,29 @@ export function Upload() {
     setLoading(true);
 
     const form = new FormData();
-    form.append("Title", title);
     form.append("Description", description);
-    form.append("UploaderId", userData.userID);
     form.append("File", selectedFile);
 
-    axios({
-      method: "post",
-      url: "https://imagehub.azurewebsites.net/api/v1.0/Image",
-      data: form,
-    })
-      .then((data) => {
-        setOpen(true);
-        setResult(true);
-        setLoading(false);
+    AuthManager.getUser().then((user) => {
+      axios.defaults.headers.common["Authorization"] =
+        "Bearer " + user.access_token;
+      axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+      axios({
+        method: "post",
+        url: "https://imagehub.azurewebsites.net/api/v2.0/Post",
+        headers:{},
+        data: form,
       })
-      .catch((error) => {
-        setOpen(true);
-        setLoading(false);
-      });
+        .then((data) => {
+          setOpen(true);
+          setResult(true);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setOpen(true);
+          setLoading(false);
+        });
+    });
 
     e.preventDefault();
   };
@@ -98,26 +100,18 @@ export function Upload() {
           <form onSubmit={handleSubmit}>
             <h1 className={classes.container}> Upload an image</h1>
 
-            <p>
-              {" "}
-              <Input
-                className={classes.container}
-                placeholder="Title"
-                inputProps={{ "aria-label": "description" }}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </p>
-            <p className={classes.center}>
+            <div className={classes.center}>
               <Input
                 className={classes.container}
                 placeholder="Description"
                 inputProps={{ "aria-label": "description" }}
                 onChange={(e) => setDescription(e.target.value)}
               />
-            </p>
+            </div>
 
             <input
               type="file"
+              accept="image/*"
               onChange={(e) => setSelectedFile(e.target.files[0])}
             />
             <p></p>
@@ -149,4 +143,4 @@ export function Upload() {
       </Snackbar>
     </div>
   );
-}
+};

@@ -1,22 +1,15 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using ImageHubService.Application.User.Requests.GetUserById;
+using IdentityServer4.AccessTokenValidation;
+using ImageHubService.Application.Feed.Requests.GetPrivateFeed;
 using ImageHubService.Config.Swagger;
-using ImageHubService.Domain.Entities;
 using ImageHubService.Domain.Repositories;
 using ImageHubService.Infrastructure.Repositories;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,75 +51,41 @@ namespace ImageHubService
                     options.IncludeXmlComments(XmlCommentsFilePath);
                 });
 
-            services.AddCors();
+            services.AddAuthorization(authorizationOptions =>
+            {
+                authorizationOptions.AddPolicy(
+                    "ImageHubIDP",
+                    policyBuilder =>
+                    {
+                        policyBuilder.RequireAuthenticatedUser();
+                    });
+            });
 
-            services.AddSingleton<IImageRepository, InMemoryImageRepo>();
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = Configuration["ImageHubIdpUri"];
+                    options.ApiName = Configuration["ImageHUBApiName"];
+                    options.ApiSecret = Configuration["ImageHUBApiSecret"];
+                });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("ImageHub", builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().SetIsOriginAllowed((host) => true));
+            });
 
             services.AddDbContext<AppIdentityDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration["ConnectionStrings:SQL_ConnectionString"]));
-
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<AppIdentityDbContext>();
-
-            services.AddTransient<UserStore<ApplicationUser>>(x =>
-                new UserStore<ApplicationUser>(x.GetRequiredService<AppIdentityDbContext>()));
-
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/api/v2/Auth/signin";
-                }).AddFacebook(fb =>
-                {
-                    fb.AppId = Configuration["FacebookAppId"];
-                    fb.AppSecret = Configuration["FacebookAppSecret"];
-                    fb.CorrelationCookie.SameSite = SameSiteMode.Lax;
-                    fb.SaveTokens = true;
-                    fb.Fields.Add("id");
-                    fb.Fields.Add("name");
-                });
-
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.AccessDeniedPath = new PathString("/Account/AccessDenied");
-                options.Cookie.Name = "Cookie";
-                options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(720);
-                options.LoginPath = new PathString("/api/v2/Auth/signin");
-                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-                options.SlidingExpiration = true;
-            });
+                    Configuration["ImageHubDbConnection"]));
 
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
 
-            services.ConfigureApplicationCookie(o =>
-            {
-                o.Events = new CookieAuthenticationEvents()
-                {
-                    OnRedirectToLogin = (ctx) =>
-                    {
-                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
-                        {
-                            ctx.Response.StatusCode = 401;
-                        }
-
-                        return Task.CompletedTask;
-                    },
-                    OnRedirectToAccessDenied = (ctx) =>
-                    {
-                        if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
-                        {
-                            ctx.Response.StatusCode = 403;
-                        }
-
-                        return Task.CompletedTask;
-                    }
-                };
-            });
-
-            services.AddMediatR(typeof(GetUserByIdCommand).Assembly);
+            services.AddMediatR(typeof(GetPrivateFeedRequest).Assembly);
             services.AddSingleton<IPictureRepo>(new BlobImageRepository(Configuration["BlobStorageConnectionString"],
                 Configuration["BlobStorageContainerName"]));
+
+            services.AddSingleton<IComputerVisionClient>(
+                new ComputerVisionClient(new ApiKeyServiceClientCredentials(Configuration["Vision"])) { Endpoint = Configuration["VisionEndpoint"] });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -137,13 +96,15 @@ namespace ImageHubService
                 app.UseDeveloperExceptionPage();
             }
 
+            InitDatabase(app);
+
             app.UseHttpsRedirection();
 
-            app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-
-            app.UseAuthentication();
+            app.UseCors("ImageHub");
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
@@ -163,6 +124,13 @@ namespace ImageHubService
                         options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                     }
                 });
+        }
+
+        private void InitDatabase(IApplicationBuilder app)
+        {
+            var scope = app.ApplicationServices.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
+            db.Database.Migrate();
         }
 
         static string XmlCommentsFilePath

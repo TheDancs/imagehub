@@ -2,7 +2,8 @@
 {
     public class UserMetaModel
     {
+        public string Id { get; set; }
         public string Name { get; set; }
-        public string Id { get; set; } //fb user id
+        public string ProfilePictureUrl { get; set; }
     }
 }

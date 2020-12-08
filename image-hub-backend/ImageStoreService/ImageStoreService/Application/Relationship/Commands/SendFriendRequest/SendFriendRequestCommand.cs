@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ImageHubService.Domain.Entities;
 using ImageHubService.Infrastructure.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImageHubService.Application.Relationship.Commands.SendFriendRequest
 {
-    public class SendFriendRequestCommand : IRequest
+    public class SendFriendRequestCommand : IRequest<bool>
     {
         public string FromUser { get; }
         public string ToUser { get; }
@@ -20,7 +20,7 @@ namespace ImageHubService.Application.Relationship.Commands.SendFriendRequest
             ToUser = toUser;
         }
 
-        public class Handler : IRequestHandler<SendFriendRequestCommand>
+        public class Handler : IRequestHandler<SendFriendRequestCommand, bool>
         {
             private readonly AppIdentityDbContext database;
 
@@ -29,22 +29,30 @@ namespace ImageHubService.Application.Relationship.Commands.SendFriendRequest
                 this.database = database;
             }
 
-            public async Task<Unit> Handle(SendFriendRequestCommand request, CancellationToken cancellationToken)
+            public async Task<bool> Handle(SendFriendRequestCommand request, CancellationToken cancellationToken)
             {
-                var exists = database.Relationships.Any(x =>
-                    (x.UserId1 == request.FromUser && x.UserId2 == request.ToUser) ||
-                    x.UserId1 == request.ToUser && x.UserId2 == request.FromUser);
-
-                if (!exists)
+                if (request.FromUser != request.ToUser)
                 {
-                    await database.FriendRequests.AddAsync(new FriendRequest()
-                    { Created = DateTime.UtcNow, From = request.FromUser, To = request.ToUser }, cancellationToken);
+                    var exists = await database.Relationships.AnyAsync(x =>
+                        (x.UserId1 == request.FromUser && x.UserId2 == request.ToUser) ||
+                        x.UserId1 == request.ToUser && x.UserId2 == request.FromUser, cancellationToken: cancellationToken);
+                    var requested = await database.FriendRequests.AnyAsync(x =>
+                        (x.FromId == request.FromUser && x.ToId == request.ToUser) ||
+                        (x.FromId == request.ToUser && x.ToId == request.FromUser), cancellationToken: cancellationToken);
 
-                    await database.SaveChangesAsync(cancellationToken);
+                    if (!exists && !requested)
+                    {
+                        await database.FriendRequests.AddAsync(new FriendRequest()
+                        { Created = DateTime.UtcNow, FromId = request.FromUser, ToId = request.ToUser }, cancellationToken);
+
+                        await database.SaveChangesAsync(cancellationToken);
+
+                        return true;
+                    }
 
                 }
 
-                return Unit.Value;
+                return false;
             }
         }
     }

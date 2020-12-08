@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ImageHubService.Domain.Entities
 {
@@ -22,11 +20,14 @@ namespace ImageHubService.Domain.Entities
         public Guid PictureId { get; set; }
         [Required]
         public DateTime UploadTime { get; set; }
+
         [Required]
         public string UploaderId { get; set; }
 
-        [ForeignKey("UploaderId")]
-        public ApplicationUser Uploader { get; set; }
         public ICollection<Like> Likes { get; set; }
+
+        [ForeignKey("UploaderId")]
+        public User Uploader { get; set; }
+
     }
 }

@@ -1,56 +1,166 @@
-import React, {useContext} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import Avatar from '@material-ui/core/Avatar';
-import {red} from '@material-ui/core/colors';
-import img from "../assets/images/paella.jpg";
-import UserDataContext from "../context/UserDataContext";
+import React, { useState } from "react";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardMedia from "@material-ui/core/CardMedia";
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import Skeleton from "@material-ui/lab/Skeleton";
+import { FetchUrl, postData } from "./profile";
+import { PostLikes } from "./modals";
+import { AuthManager } from "../providers/authProvider";
+import { Button, Grid, Link } from "@material-ui/core";
+
+//@Todo: A Like számlálóhoz kell csinálni egy modalt, ami megjeleníti a lájkolókat
+//@Todo: Az feltöltő nevére húzott egérrel, megjelenik egy mini summary
+
+export default function CreatePost(args) {
+  const url =
+    "https://imagehub.azurewebsites.net/api/v2.0/Post/" +
+    args.post.id +
+    "/likes";
+  const [likes, setLikes] = useState([]);
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [liked, setLiked] = useState(false);
+
+  if (!isLoaded) {
+    FetchUrl(url)
+      .then((res) => {
+        setLikes(res);
+      })
+      .catch((err) => setError(err))
+      .finally(setIsLoaded(true));
+  } else {
+    AuthManager.getUser().then((user) => {
+      likes.forEach(like => {
+        if(like.user.id === user.profile.sub)
+          setLiked(true);
+      });
+    });
+  }
+
+  return (
+    <Card maxwidth={500} marginbottom={15} key={args.post.Id}>
+      <CardHeader
+        avatar={<Avatar src={args.post.uploader.profilePictureUrl} />}
+        title={
+          <Link
+            color="inherit"
+            variant="h6"
+            href={"/Profile?" + args.post.uploader.id}
+          >
+            {args.post.uploader.name}
+          </Link>
+        }
+      />
+       <CardMedia
+          component="img"
+          height="450"
+          image={args.post.pictureUrl}
+        />
+      <CardContent>
+        <Typography variant="body2" color="textSecondary" component="p">
+          Uploaded:  
+          {new Intl.DateTimeFormat("hu-HU", {
+            year: "numeric",
+            month: "long",
+            day: "2-digit",
+          }).format(new Date(args.post.uploadTime))}
+        </Typography>
+        <Typography variant="subtitle1" color="textPrimary" component="p">
+          {args.post.description}
+        </Typography>
+      </CardContent>
+
+      <CardActions>
+        <Grid
+          container
+          direction="row"
+          justify="flex-start"
+          alignItems="center"
+        >
+          <Grid item>
+            <IconButton
+              aria-label="Likes"
+              onClick={() => setLiked(LikePost(args.post.id, liked))}
+            >
+              <FavoriteIcon
+                fontSize="large"
+                color={liked ? "secondary" : "inherit"}
+              />
+            </IconButton>
+          </Grid>
+          <Grid item>
+            <PostLikes likes={likes} numberOfLikes={args.post.like} />
+          </Grid>
+        </Grid>
+      </CardActions>
+    </Card>
+  );
+}
 
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        maxWidth: 345,
-    },
-    media: {
-        height: 0,
-        paddingTop: '56.25%', // 16:9
-    },
-    expand: {
-        transform: 'rotate(0deg)',
-        marginLeft: 'auto',
-        transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),
-    },
-    expandOpen: {
-        transform: 'rotate(180deg)',
-    },
-    avatar: {
-        backgroundColor: red[500],
-    },
-}));
+async function LikePost(id, liked) {
+  if (id && id.toString().length > 20) {
+    if (!liked) {
+      var url =
+        "https://imagehub.azurewebsites.net/api/v2.0/Post/" + id + "/like";
+    } else {
+      var url =
+        "https://imagehub.azurewebsites.net/api/v2.0/Post/" + id + "/unlike";
+    }
 
-export default function RecipeReviewCard() {
-    const classes = useStyles();
-    const userData = useContext(UserDataContext);
+    if (postData(url) === 200) {
+      ;
+  }
+  return !liked;
+}
+}
 
-    return (
-        <Card className={classes.root}>
-            <CardHeader
-                avatar={
-                    <Avatar aria-label="recipe" className={classes.avatar}>
-                        {userData.name.charAt(0)}
-                    </Avatar>
-                }
-                title={userData.name}
+export function LoadingPost() {
+  return (
+    <Card marginbottom={15}>
+      <CardHeader
+        avatar={
+          <Skeleton animation="wave" variant="circle" width={40} height={40} />
+        }
+        action={null}
+        title={
+          <Skeleton
+            animation="wave"
+            height={10}
+            width="80%"
+            style={{ marginbottom: 6 }}
+          />
+        }
+        subheader={<Skeleton animation="wave" height={10} width="40%" />}
+      />
+      {
+        <Skeleton
+          animation="wave"
+          variant="rect"
+          width="100%"
+          height={300}
+          paddingtop={"100.00%"}
+        />
+      }
+
+      <CardContent width={500}>
+        {
+          <React.Fragment>
+            <Skeleton
+              animation="wave"
+              height={10}
+              style={{ marginbottom: 6 }}
             />
-            <CardMedia
-                className={classes.media}
-                image={img}
-                title="Paella dish"
-            />
-        </Card>
-    );
+            <Skeleton animation="wave" height={10} width="80%" />
+          </React.Fragment>
+        }
+      </CardContent>
+    </Card>
+  );
 }

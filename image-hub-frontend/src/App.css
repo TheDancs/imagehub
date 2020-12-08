@@ -46,6 +46,16 @@
     padding-top: 100px;
 }
 
+.paper--profile{
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 80px;
+    padding-left: 50px;
+    padding-top: 30px;
+    padding-bottom: 50px;
+}
+
 #root .MuiAppBar-colorPrimary {
     background-color: white;
     color: black;
@@ -59,3 +69,4 @@ a {
     color: black;
     text-decoration: unset;
 }
+

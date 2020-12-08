@@ -1,51 +1,41 @@
-import React, {useState} from 'react';
-import './App.css';
-import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
-import {blue} from "@material-ui/core/colors";
-import {Login} from "./components/login";
-import Routes from "./Routes";
-import PrimarySearchAppBar from "./components/app-bar";
-import UserDataContext from "./context/UserDataContext";
+import React, { Component } from "react";
+import "./App.css";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { blue } from "@material-ui/core/colors";
+import { Routes } from "./Routes";
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./providers/authProvider";
 
 const styles = {};
 
 styles.fill = {
-    position: "relative",
-    height: "100%",
-    width: "100%"
-}
+  position: "relative",
+  height: "100%",
+  width: "100%",
+};
 
 styles.content = {
-    ...styles.fill
-}
+  ...styles.fill,
+};
 
+const theme = createMuiTheme({
+  palette: {
+    primary: blue,
+  },
+});
 
-function App() {
-    let [isLoggedIn, setIsLoggedIn] = useState(true)
-    let [fbDatas, setFbDatas] = useState({
-        userID: '',
-        name: '',
-        email: '',
-        picture: ''
-    })
-
-    const theme = createMuiTheme({
-        palette: {
-            primary: blue,
-        },
-    })
+export class App extends Component {
+  render() {
     return (
-        <div className="App">
-            <ThemeProvider theme={theme}>
-                {!isLoggedIn && <Login setIsLoggedIn={setIsLoggedIn} setFbDatas={setFbDatas}/>}
-                <UserDataContext.Provider value={fbDatas}>
-                    {isLoggedIn && <PrimarySearchAppBar setIsLoggedIn={setIsLoggedIn}/>}
-                    {isLoggedIn && <Routes/>}
-                </UserDataContext.Provider>
-
-            </ThemeProvider>
-        </div>
+      <div className="App">
+        <AuthProvider>
+          <ThemeProvider theme={theme}>
+            <BrowserRouter children={Routes} basename={"/"}>
+              
+            </BrowserRouter>
+          </ThemeProvider>
+        </AuthProvider>
+      </div>
     );
+  }
 }
-
-export default App;

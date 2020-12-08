@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +18,7 @@ namespace ImageHubService.Application.Relationship.Requests.GetFriendRequests
             UserId = userId;
         }
 
-        public class Handler: IRequestHandler<GetFriendRequests, IEnumerable<FriendRequest>>
+        public class Handler : IRequestHandler<GetFriendRequests, IEnumerable<FriendRequest>>
         {
             private readonly AppIdentityDbContext database;
 
@@ -28,14 +27,15 @@ namespace ImageHubService.Application.Relationship.Requests.GetFriendRequests
                 this.database = database;
             }
 
-
             public async Task<IEnumerable<FriendRequest>> Handle(GetFriendRequests request, CancellationToken cancellationToken)
             {
-                return await database.FriendRequests.Where(x => x.To == request.UserId).Select(y => new FriendRequest()
-                {
-                    From = new UserMetaModel() {Id = y.FromUser.Id, Name = y.FromUser.UserName}, Id = y.Id.ToString(),
-                    RequestTime = y.Created
-                }).ToListAsync(cancellationToken);
+                return await database.FriendRequests.Where(x => x.ToId == request.UserId).Include(x => x.From).Select(
+                    y => new FriendRequest()
+                    {
+                        From = new UserMetaModel() { Id = y.FromId, Name = y.From.Name, ProfilePictureUrl = y.From.ProfilePictureUrl },
+                        Id = y.Id.ToString(),
+                        RequestTime = y.Created
+                    }).ToListAsync(cancellationToken);
             }
         }
     }
