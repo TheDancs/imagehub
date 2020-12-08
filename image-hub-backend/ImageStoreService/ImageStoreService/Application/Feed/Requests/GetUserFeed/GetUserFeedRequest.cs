@@ -34,7 +34,7 @@ namespace ImageHubService.Application.Feed.Requests.GetUserFeed
             {
                 var posts = await database.Posts.Where(x => x.UploaderId == request.UserId)
                     .Include(y => y.Likes)
-                    .Include(x => x.Uploader)
+                    .Include(x => x.Uploader).OrderByDescending(x => x.UploadTime)
                     .ToListAsync(cancellationToken);
 
                 return posts.Select(x => new PostModel()

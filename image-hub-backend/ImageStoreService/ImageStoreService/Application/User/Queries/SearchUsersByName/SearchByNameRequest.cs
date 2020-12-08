@@ -50,7 +50,10 @@ namespace ImageHubService.Application.User.Queries.SearchUsersByName
             private async Task<int> GetFriendStatus((string fromId, string toId) request, CancellationToken cancellationToken)
             {
                 int friendStatus;
-                if (request.fromId == request.toId)
+                if (request.fromId == request.toId || await database.Relationships.AnyAsync(
+                    x => (x.UserId1 == request.fromId && x.UserId2 == request.toId) ||
+                         (x.UserId2 == request.fromId && x.UserId1 == request.toId),
+                    cancellationToken: cancellationToken))
                 {
                     friendStatus = 1;
                 }
