@@ -11,6 +11,7 @@ using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.Services;
 using ImageHub.Identity.Data;
 using ImageHub.Identity.Models;
 using Microsoft.AspNetCore.Authentication.OAuth;
@@ -21,6 +22,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace ImageHub.Identity
 {
@@ -113,6 +115,14 @@ namespace ImageHub.Identity
                 builder.AddSigningCredential(cert);
             }
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
+
+            //services.AddSingleton<ICorsPolicyService>((container) => {
+            //    var logger = container.GetRequiredService<ILogger<DefaultCorsPolicyService>>();
+            //    return new DefaultCorsPolicyService(logger)
+            //    {
+            //        AllowAll = true
+            //    };
+            //});
         }
 
         public void Configure(IApplicationBuilder app)
@@ -127,6 +137,8 @@ namespace ImageHub.Identity
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            //app.UseCors();
 
             app.UseIdentityServer();
 

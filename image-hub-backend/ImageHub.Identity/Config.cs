@@ -53,14 +53,16 @@ namespace ImageHub.Identity
                         "https://localhost:44389/signin-oidc",
                         "https://localhost:3000/signin-oidc",
                         "http://localhost:3000/signin-oidc",
-                        "https://imagehubdev.z28.web.core.windows.net/signin-oidc"
+                        "https://imagehubdev.z28.web.core.windows.net/signin-oidc",
+                        "https://imagehubsite.azurewebsites.net/signin-oidc"
                     },
                     PostLogoutRedirectUris =
                     {
                         "http://localhost:3000/index.html",
-                        "https://imagehubdev.z28.web.core.windows.net/logout/callback"
+                        "https://imagehubdev.z28.web.core.windows.net/logout/callback",
+                        "https://imagehubsite.azurewebsites.net/logout/callback"
                     },
-                    AllowedCorsOrigins = {"http://localhost:3000", "https://imagehubdev.z28.web.core.windows.net/"},
+                    AllowedCorsOrigins = {"http://localhost:3000", "https://imagehubdev.z28.web.core.windows.net", "https://imagehubsite.azurewebsites.net"},
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
