@@ -7,7 +7,7 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import TextField from '@material-ui/core/TextField';
 import { FetchUrl, postData,} from './profile';
-import { ShowInfo } from './alert';
+import { ShowError, ShowInfo } from './alert';
 import { Avatar, Typography } from '@material-ui/core';
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import IconButton from "@material-ui/core/IconButton";
@@ -149,9 +149,22 @@ export function FriendRequests(requs = []) {
   );
 }
 
-export function ViewFriends(friendsList = []) {
+//args.id
+export function ViewFriends(args) {
   const vf_classes = useStyles();
+
+  const url ="https://imagehub.azurewebsites.net/api/v2.0/User/"+args.id+"/friends";
   const [open, setOpen] = useState(false);
+  const [friends, setFriends] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [error, setError] = useState(null)
+
+  //Fetch friends
+  if(!isLoaded)
+    FetchUrl(url)
+    .then(re => setFriends(re))
+    .catch(er => setError(er))
+    .finally(()=> setIsLoaded(true));
 
   const handleOpen = () => {
     setOpen(true);
@@ -160,54 +173,65 @@ export function ViewFriends(friendsList = []) {
   const handleClose = () => {
     setOpen(false);
   };
+
   var body;
-  if (friendsList && friendsList.length > 0) {
-    body = (
-      <div>
-        <h2 id="simple-modal-title">Friends</h2>
-        <div id="simple-modal-description">
-          {friendsList.map((friend) => {
-           return (
-            <div key={friend.id}>
-               <Grid container spacing={3} xs={12} alignitems="center" justifycontent="flex-start">
-        <Grid item   >
-        <Avatar src={friend.profilePictureUrl} />
-       
-        </Grid>
-        <Grid item>
-        <Link
-            color="inherit"
-            variant="h6"
-            href={"/Profile?" + friend.id}
-          >
-            {friend.name}
-          </Link>
-        </Grid>
-        <Grid container  xs={5} aligncontent="center" justifycontent="flex-end">
-          <Grid item >
-              <FriendRequestButton userId={friend.id} statusCode={friend.friendStatus} />
-          </Grid>
-        
-        </Grid>
-      </Grid>
-            </div>
-          );
-        })
-          })
-          
-        </div>
-      </div>
+
+if(error || !friends || friends.length<=0) 
+{
+  if(error)
+    body = (<>
+      {ShowError("Couldn't load list", error.message)}
+      </>
     );
-  }
-  else {
-    body = (
-      <div>
-        <h2 id="simple-modal-title">Friends</h2>
-        <div id="simple-modal-description">
-          {ShowInfo("No friends", "You don't have any friends.")}
-        </div>
-      </div>);
-  }
+  else
+    body = (<>
+    {ShowInfo("No friends", "You don't have any friends.")}
+    </>
+    );
+}
+else if(!isLoaded)
+{
+  body = "Loading..."; 
+}
+else{
+  body = (
+    <div>
+      <h2 id="simple-modal-title">Friends</h2>
+      <div id="simple-modal-description">
+        {friends.map((friend) => {
+         return (
+          <div key={friend.id}>
+             <Grid container spacing={3} xs={12} alignitems="center" justifycontent="flex-start">
+      <Grid item   >
+      <Avatar src={friend.profilePictureUrl} />
+     
+      </Grid>
+      <Grid item>
+      <Link
+          color="inherit"
+          variant="h6"
+          href={"/Profile?" + friend.id}
+        >
+          {friend.name}
+        </Link>
+      </Grid>
+      <Grid container  xs={5} aligncontent="center" justifycontent="flex-end">
+        <Grid item >
+            <FriendRequestButton userId={friend.id} statusCode={friend.friendStatus} />
+        </Grid>
+      
+      </Grid>
+    </Grid>
+          </div>
+        );
+      })
+        })
+        
+      </div>
+    </div>
+  );
+}
+
   return (
     <div>
       <Button variant="outlined" onClick={handleOpen}>
@@ -410,7 +434,7 @@ export function PostLikes(props){
       
       <Button className={vf_classes.likeButton} variant="text" onClick={()=>handleOpen()}>
         <Typography variant="h6">
-        {props.likes.length.toString()}
+        {props.numberOfLikes}
         </Typography>
           
         </Button>

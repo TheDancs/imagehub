@@ -202,7 +202,7 @@ export function ProfileSummary(user_id) {
                     <Grid container spacing={2}
                       direction="row">
                       <Grid item >
-                        <ViewFriends friendsList={userSummary.id} />
+                        <ViewFriends id={userSummary.id} />
 
                       </Grid>
                       <Grid item>
