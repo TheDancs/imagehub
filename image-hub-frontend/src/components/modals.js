@@ -6,13 +6,14 @@ import Button from '@material-ui/core/Button';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import TextField from '@material-ui/core/TextField';
-import { FetchUrl, postData, SendFriendRequest, Unfriend } from './profile';
+import { FetchUrl, postData,} from './profile';
 import { ShowInfo } from './alert';
 import { Avatar, Typography } from '@material-ui/core';
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import IconButton from "@material-ui/core/IconButton";
 import { UnfoldMoreOutlined } from '@material-ui/icons';
 import { Grid, Link } from "@material-ui/core";
+import FriendRequestButton from "./friendRequestButton";
 
 const useStyles = makeStyles((theme) => ({
   inputRoot: {
@@ -73,14 +74,6 @@ function AcceptRequest(id) {
 }
 function RejectRequest(id) {
   postData("https://imagehub.azurewebsites.net/api/v2.0/User/friendrequests/" + { id } + "/reject");
-}
-
-//@Todo: Url-ek beírása
-function AddOrRemoveFriend(id, remove) {
-  if (remove)
-  Unfriend(id);
-  else    
-    SendFriendRequest(id);
 }
 
 export function FriendRequests(requs = []) {
@@ -174,17 +167,34 @@ export function ViewFriends(friendsList = []) {
         <h2 id="simple-modal-title">Friends</h2>
         <div id="simple-modal-description">
           {friendsList.map((friend) => {
-            return (
-              <div>
-                <Avatar src={friend.profilePicture} />
-                {friend.name}
-                <Button onClick={AddOrRemoveFriend(friend.id, friend.isFriend)}>
-                  {friend.isFriend ? "Delete friend" : "Add friend"}
-                </Button>
-              </div>
-            );
+           return (
+            <div key={friend.id}>
+               <Grid container spacing={3} xs={12} alignitems="center" justifycontent="flex-start">
+        <Grid item   >
+        <Avatar src={friend.profilePictureUrl} />
+       
+        </Grid>
+        <Grid item>
+        <Link
+            color="inherit"
+            variant="h6"
+            href={"/Profile?" + friend.id}
+          >
+            {friend.name}
+          </Link>
+        </Grid>
+        <Grid container  xs={5} aligncontent="center" justifycontent="flex-end">
+          <Grid item >
+              <FriendRequestButton userId={friend.id} statusCode={friend.friendStatus} />
+          </Grid>
+        
+        </Grid>
+      </Grid>
+            </div>
+          );
+        })
           })
-          }
+          
         </div>
       </div>
     );
@@ -285,9 +295,7 @@ export function SearchResult() {
         </Grid>
         <Grid container  xs={5} aligncontent="center" justifycontent="flex-end">
           <Grid item >
-          <Button variant="outlined" onClick={()=> AddOrRemoveFriend(friend.id, friend.isFriend)}>
-                {friend.isFriend ? "Delete friend" : "Add friend"}
-              </Button>
+            <FriendRequestButton userId={friend.id} statusCode={friend.friendStatus}/>
           </Grid>
         
         </Grid>
