@@ -13,6 +13,7 @@ import { FetchUrl, postData } from "./profile";
 import { PostLikes } from "./modals";
 import { AuthManager } from "../providers/authProvider";
 import { Button, Grid, Link } from "@material-ui/core";
+import LikeButton from "./likeButton";
 
 //@Todo: A Like számlálóhoz kell csinálni egy modalt, ami megjeleníti a lájkolókat
 //@Todo: Az feltöltő nevére húzott egérrel, megjelenik egy mini summary
@@ -77,49 +78,14 @@ export default function CreatePost(args) {
       </CardContent>
 
       <CardActions>
-        <Grid
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="center"
-        >
-          <Grid item>
-            <IconButton
-              aria-label="Likes"
-              onClick={() => setLiked(LikePost(args.post.id, liked))}
-            >
-              <FavoriteIcon
-                fontSize="large"
-                color={liked ? "secondary" : "inherit"}
-              />
-            </IconButton>
-          </Grid>
-          <Grid item>
-            <PostLikes likes={likes} numberOfLikes={args.post.like} />
-          </Grid>
-        </Grid>
+        <LikeButton postId={args.post.id} likes={args.post.likes}/>
       </CardActions>
     </Card>
   );
 }
 
 
-async function LikePost(id, liked) {
-  if (id && id.toString().length > 20) {
-    if (!liked) {
-      var url =
-        "https://imagehub.azurewebsites.net/api/v2.0/Post/" + id + "/like";
-    } else {
-      var url =
-        "https://imagehub.azurewebsites.net/api/v2.0/Post/" + id + "/unlike";
-    }
 
-    if (postData(url) === 200) {
-      ;
-  }
-  return !liked;
-}
-}
 
 export function LoadingPost() {
   return (
