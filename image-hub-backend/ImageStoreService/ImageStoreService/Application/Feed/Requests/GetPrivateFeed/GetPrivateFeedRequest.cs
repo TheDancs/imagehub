@@ -37,7 +37,7 @@ namespace ImageHubService.Application.Feed.Requests.GetPrivateFeed
                     .Where(x => x.UserId1 == request.UserId || x.UserId2 == request.UserId)
                     .Select(x => x.UserId1 == request.UserId ? x.UserId2 : x.UserId1).ToListAsync(cancellationToken);
 
-                var posts = await database.Posts.Include(x => x.Uploader).Where(x => friends.Contains(x.UploaderId) || x.UploaderId == request.UserId)
+                var posts = await database.Posts.Include(x => x.Uploader).Where(x => friends.Contains(x.UploaderId))
                     .Include(y => y.Likes)
                     .ToListAsync(cancellationToken);
 

@@ -1,65 +1,65 @@
-import React, { useState } from 'react';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
-import Button from '@material-ui/core/Button';
-import { fade, makeStyles } from '@material-ui/core/styles';
-import SearchIcon from '@material-ui/icons/Search';
-import TextField from '@material-ui/core/TextField';
-import { FetchUrl, postData, SendFriendRequest, Unfriend } from './profile';
-import { ShowInfo } from './alert';
-import { Avatar, Typography } from '@material-ui/core';
+import React, { useState } from "react";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
+import Button from "@material-ui/core/Button";
+import { fade, makeStyles } from "@material-ui/core/styles";
+import SearchIcon from "@material-ui/icons/Search";
+import TextField from "@material-ui/core/TextField";
+import { FetchUrl, postData, SendFriendRequest, Unfriend } from "./profile";
+import { ShowInfo } from "./alert";
+import { Avatar, Typography } from "@material-ui/core";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import IconButton from "@material-ui/core/IconButton";
-import { UnfoldMoreOutlined } from '@material-ui/icons';
+import { UnfoldMoreOutlined } from "@material-ui/icons";
 import { Grid, Link } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   inputRoot: {
-    color: 'inherit',
-    paddingLeft: '25px'
+    color: "inherit",
+    paddingLeft: "25px",
   },
   search: {
-    position: 'relative',
+    position: "relative",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
+    "&:hover": {
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
     marginRight: theme.spacing(2),
-    marginLeft: '60vh !important',
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
+    marginLeft: "60vh !important",
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
       marginLeft: theme.spacing(3),
-      width: 'auto',
+      width: "auto",
     },
   },
   btns: {
-    position: 'relative',
+    position: "relative",
     maxwidth: 400,
     padding: theme.spacing(2),
   },
   searchIcon: {
     padding: theme.spacing(0, 0),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   modal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    maxwidth:'400px',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    maxwidth: "400px",
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
+    border: "2px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
-    width: "400px"
+    width: "400px",
   },
   likeButton: {
     textalign: "left",
@@ -69,18 +69,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function AcceptRequest(id) {
-  postData("https://imagehub.azurewebsites.net/api/v2.0/User/friendrequests/" + { id } + "/accept");
+  postData(
+    "https://imagehub.azurewebsites.net/api/v2.0/User/friendrequests/" +
+      { id } +
+      "/accept"
+  );
 }
 function RejectRequest(id) {
-  postData("https://imagehub.azurewebsites.net/api/v2.0/User/friendrequests/" + { id } + "/reject");
+  postData(
+    "https://imagehub.azurewebsites.net/api/v2.0/User/friendrequests/" +
+      { id } +
+      "/reject"
+  );
 }
 
 //@Todo: Url-ek beírása
 function AddOrRemoveFriend(id, remove) {
-  if (remove)
-  Unfriend(id);
-  else    
-    SendFriendRequest(id);
+  if (remove) Unfriend(id);
+  else SendFriendRequest(id);
 }
 
 export function FriendRequests(requs = []) {
@@ -96,7 +102,7 @@ export function FriendRequests(requs = []) {
   };
 
   var body;
-  var buttonText = "Friend Requests"
+  var buttonText = "Friend Requests";
 
   if (requs && requs.length > 0) {
     buttonText = "Friend Requests (" + requs.length + ")";
@@ -109,17 +115,19 @@ export function FriendRequests(requs = []) {
               <div>
                 <Avatar src={req.userSummary.profilePicture} />
                 <div>{req.userSummary.name}</div>
-                <Button variant="contained" onClick={AcceptRequest(req.id)}>Accept</Button>
-                <Button variant="outlined" onClick={RejectRequest(req.id)}>Reject</Button>
+                <Button variant="contained" onClick={AcceptRequest(req.id)}>
+                  Accept
+                </Button>
+                <Button variant="outlined" onClick={RejectRequest(req.id)}>
+                  Reject
+                </Button>
               </div>
             );
-          })
-          }
+          })}
         </div>
       </div>
     );
-  }
-  else {
+  } else {
     body = (
       <div>
         <h2 id="simple-modal-title">Friend requests</h2>
@@ -127,7 +135,6 @@ export function FriendRequests(requs = []) {
       </div>
     );
   }
-
 
   return (
     <div>
@@ -147,9 +154,7 @@ export function FriendRequests(requs = []) {
         }}
       >
         <Fade in={open}>
-          <div className={classes.paper}>
-            {body}
-          </div>
+          <div className={classes.paper}>{body}</div>
         </Fade>
       </Modal>
     </div>
@@ -183,26 +188,25 @@ export function ViewFriends(friendsList = []) {
                 </Button>
               </div>
             );
-          })
-          }
+          })}
         </div>
       </div>
     );
-  }
-  else {
+  } else {
     body = (
       <div>
         <h2 id="simple-modal-title">Friends</h2>
         <div id="simple-modal-description">
           {ShowInfo("No friends", "You don't have any friends.")}
         </div>
-      </div>);
+      </div>
+    );
   }
   return (
     <div>
       <Button variant="outlined" onClick={handleOpen}>
         Friend list
-        </Button>
+      </Button>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -216,9 +220,7 @@ export function ViewFriends(friendsList = []) {
         }}
       >
         <Fade in={open}>
-          <div className={vf_classes.paper}>
-            {body}
-          </div>
+          <div className={vf_classes.paper}>{body}</div>
         </Fade>
       </Modal>
     </div>
@@ -234,22 +236,29 @@ export function SearchResult() {
   const [search_value, setSearchValue] = useState("");
   const [search_result, setSearchResult] = useState([]);
   const [isLoaded, setIsloaded] = useState(false);
-  const [url, setUrl] = useState("https://imagehub.azurewebsites.net/api/v2.0/User/search/");
-
+  const [url, setUrl] = useState(
+    "https://imagehub.azurewebsites.net/api/v2.0/User/search/"
+  );
 
   const handleOpen = (event) => {
     var search_bar = document.getElementById("search_bar");
     if (event.key === "Enter") {
-            setSearchValue(search_bar.value);
+      setSearchValue(search_bar.value);
 
-      setUrl("https://imagehub.azurewebsites.net/api/v2.0/User/search/" + search_bar.value);
+      setUrl(
+        "https://imagehub.azurewebsites.net/api/v2.0/User/search/" +
+          search_bar.value
+      );
 
-      if(!isLoaded)
-      FetchUrl(url).then(result => setSearchResult(result))
-      .catch(error => console.log(error))
-      .finally(() => {setIsloaded(true);setOpen(true);});
+      if (!isLoaded)
+        FetchUrl(url)
+          .then((result) => setSearchResult(result))
+          .catch((error) => console.log(error))
+          .finally(() => {
+            setIsloaded(true);
+            setOpen(true);
+          });
     }
-
   };
 
   const handleClose = () => {
@@ -258,44 +267,55 @@ export function SearchResult() {
   };
 
   var content;
-  if(isLoaded && search_result.length===0)
+  if (isLoaded && search_result.length === 0)
     content = ShowInfo("Result", "No result for '" + search_value + "'");
-
-  else if (!isLoaded)
-    content = "Loading...";
+  else if (!isLoaded) content = "Loading...";
   else
     content = (
       <>
         {search_result.map((friend) => {
           return (
             <div key={friend.id}>
-               <Grid container spacing={3} xs={12} alignitems="center" justifycontent="flex-start">
-        <Grid item   >
-        <Avatar src={friend.profilePictureUrl} />
-       
-        </Grid>
-        <Grid item>
-        <Link
-            color="inherit"
-            variant="h6"
-            href={"/Profile?" + friend.id}
-          >
-            {friend.name}
-          </Link>
-        </Grid>
-        <Grid container  xs={5} aligncontent="center" justifycontent="flex-end">
-          <Grid item >
-          <Button variant="outlined" onClick={()=> AddOrRemoveFriend(friend.id, friend.isFriend)}>
-                {friend.isFriend ? "Delete friend" : "Add friend"}
-              </Button>
-          </Grid>
-        
-        </Grid>
-      </Grid>
+              <Grid
+                container
+                spacing={3}
+                xs={12}
+                alignitems="center"
+                justifycontent="flex-start"
+              >
+                <Grid item>
+                  <Avatar src={friend.profilePictureUrl} />
+                </Grid>
+                <Grid item>
+                  <Link
+                    color="inherit"
+                    variant="h6"
+                    href={"/Profile?" + friend.id}
+                  >
+                    {friend.name}
+                  </Link>
+                </Grid>
+                <Grid
+                  container
+                  xs={5}
+                  aligncontent="center"
+                  justifycontent="flex-end"
+                >
+                  <Grid item>
+                    <Button
+                      variant="outlined"
+                      onClick={() =>
+                        AddOrRemoveFriend(friend.id, friend.isFriend)
+                      }
+                    >
+                      {friend.isFriend ? "Delete friend" : "Add friend"}
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
             </div>
           );
-        })
-        }
+        })}
       </>
     );
   return (
@@ -303,15 +323,15 @@ export function SearchResult() {
       <div className={classes.searchIcon}>
         <SearchIcon />
       </div>
-      <TextField onKeyUp={handleOpen}
-
+      <TextField
+        onKeyUp={handleOpen}
         id="search_bar"
         placeholder="Search…"
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput,
         }}
-        inputProps={{ 'aria-label': 'search' }}
+        inputProps={{ "aria-label": "search" }}
       />
 
       <Modal
@@ -330,10 +350,7 @@ export function SearchResult() {
           <div className={classes.paper}>
             <div>
               <h2 id="simple-modal-title">Search result to "{search_value}"</h2>
-              <div className={classes.btns}>
-                {content}
-
-              </div>
+              <div className={classes.btns}>{content}</div>
             </div>
           </div>
         </Fade>
@@ -342,12 +359,9 @@ export function SearchResult() {
   );
 }
 
-
-
-export function PostLikes(props){
-  
+export function PostLikes(props) {
   const vf_classes = useStyles();
-  const [open, setOpen] = useState(false);  
+  const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -365,48 +379,51 @@ export function PostLikes(props){
           {props.likes.map((like) => {
             return (
               <div key={like.user.id}>
-              <Grid container spacing={3} alignitems="center" justifycontent="flex-start">
-       <Grid item   >
-       <Avatar src={like.user.profilePictureUrl} />
-      
-       </Grid>
-       <Grid item>
-       <Link
-           color="inherit"
-           variant="h6"
-           href={"/Profile?" + like.user.id}
-         >
-           {like.user.name}
-         </Link>
-       </Grid>
-     </Grid>
-           </div>
-         );
-       })
-       }
+                <Grid
+                  container
+                  spacing={3}
+                  alignitems="center"
+                  justifycontent="flex-start"
+                >
+                  <Grid item>
+                    <Avatar src={like.user.profilePictureUrl} />
+                  </Grid>
+                  <Grid item>
+                    <Link
+                      color="inherit"
+                      variant="h6"
+                      href={"/Profile?" + like.user.id}
+                    >
+                      {like.user.name}
+                    </Link>
+                  </Grid>
+                </Grid>
+              </div>
+            );
+          })}
         </div>
       </div>
     );
-  }
-  else {
+  } else {
     body = (
       <div>
         <h2 id="simple-modal-title">People who liked</h2>
         <div id="simple-modal-description">
           {ShowInfo("No likes", "Nobody likes this.")}
         </div>
-      </div>);
+      </div>
+    );
   }
   return (
     <div>
-      
-      <Button className={vf_classes.likeButton} variant="text" onClick={()=>handleOpen()}>
-        <Typography variant="h6">
-        {props.likes.length.toString()}
-        </Typography>
-          
-        </Button>
-        
+      <Button
+        className={vf_classes.likeButton}
+        variant="text"
+        onClick={() => handleOpen()}
+      >
+        <Typography variant="h6">{props.likes.length.toString()}</Typography>
+      </Button>
+
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -420,9 +437,7 @@ export function PostLikes(props){
         }}
       >
         <Fade in={open}>
-          <div className={vf_classes.paper}>
-            {body}
-          </div>
+          <div className={vf_classes.paper}>{body}</div>
         </Fade>
       </Modal>
     </div>

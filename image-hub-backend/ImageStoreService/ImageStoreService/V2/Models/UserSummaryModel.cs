@@ -9,6 +9,10 @@ namespace ImageHubService.V2.Models
     {
         public int NumberOfFriends { get; set; }
         public int NumberOfPosts { get; set; }
-        public bool IsFriend { get; set; }
+
+        /// <summary>
+        /// 0 not friend, 1 friend, 2 request sent
+        /// </summary>
+        public int FriendStatus { get; set; }
     }
 }

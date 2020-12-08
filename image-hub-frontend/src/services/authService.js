@@ -19,7 +19,7 @@ export default class AuthService {
     });
     // Logger
     Log.logger = console;
-    Log.level = Log.DEBUG;
+    Log.level = Log.ERROR;
 
     this.UserManager.events.addUserLoaded((user) => {
       if (window.location.href.indexOf("signin-oidc") !== -1) {
@@ -61,6 +61,7 @@ export default class AuthService {
     if (!user) {
       return await this.UserManager.signinRedirectCallback();
     }
+    console.log(user.access_token);
     return user;
   };
 

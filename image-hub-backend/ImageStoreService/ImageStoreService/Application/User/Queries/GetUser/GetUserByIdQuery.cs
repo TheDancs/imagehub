@@ -32,6 +32,7 @@ namespace ImageHubService.Application.User.Queries.GetUser
 
             public async Task<UserSummaryModel> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
             {
+                var friendStatus = 0;
                 var result = await database.Users
                     .FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken: cancellationToken);
                 var friendsCount = await database.Relationships.CountAsync(x => x.UserId1 == request.UserId || x.UserId2 == request.UserId, cancellationToken: cancellationToken);
@@ -39,6 +40,8 @@ namespace ImageHubService.Application.User.Queries.GetUser
                 var isFriend = request.UserId == request.RequestFrom || await database.Relationships.AnyAsync(x =>
                     (x.UserId1 == request.RequestFrom && x.UserId2 == request.UserId) ||
                     (x.UserId2 == request.RequestFrom && x.UserId1 == request.UserId), cancellationToken: cancellationToken);
+
+                friendStatus = await GetFriendStatus(request, cancellationToken, isFriend);
 
                 if (result != null)
                 {
@@ -48,7 +51,7 @@ namespace ImageHubService.Application.User.Queries.GetUser
                         Name = result.Name,
                         Email = result.Email,
                         ProfilePictureUrl = result.ProfilePictureUrl,
-                        IsFriend = isFriend,
+                        FriendStatus = friendStatus,
                         NumberOfFriends = friendsCount,
                         NumberOfPosts = postCount,
                     };
@@ -56,6 +59,33 @@ namespace ImageHubService.Application.User.Queries.GetUser
                 }
 
                 return null;
+            }
+
+            private async Task<int> GetFriendStatus(GetUserByIdQuery request, CancellationToken cancellationToken, bool isFriend)
+            {
+                int friendStatus;
+                if (isFriend)
+                {
+                    friendStatus = 1;
+                }
+                else
+                {
+                    var isFriendRequestSent = await database.FriendRequests.AnyAsync(x =>
+                        x.FromId == request.RequestFrom && x.ToId == request.UserId, cancellationToken: cancellationToken);
+                    if (isFriendRequestSent)
+                    {
+                        friendStatus = 2;
+                    }
+                    else
+                    {
+                        var isFriendRequestPending = await database.FriendRequests.AnyAsync(x =>
+                            x.ToId == request.RequestFrom && x.FromId == request.UserId, cancellationToken: cancellationToken);
+
+                        friendStatus = isFriendRequestPending ? 3 : 0;
+                    }
+                }
+
+                return friendStatus;
             }
         }
     }

@@ -79,7 +79,7 @@ namespace ImageHubService.V2.Controllers
         /// <returns>Returns list of friends</returns>
         /// <response code="200">Returns list of users</response>
         [HttpGet("search/{name}")]
-        [ProducesResponseType(typeof(IEnumerable<UserMetaModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<UserSearchResult>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SearchUsersByName([FromRoute] string name)
         {

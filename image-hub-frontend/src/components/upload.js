@@ -111,6 +111,7 @@ export const Upload = () => {
 
             <input
               type="file"
+              accept="image/*"
               onChange={(e) => setSelectedFile(e.target.files[0])}
             />
             <p></p>

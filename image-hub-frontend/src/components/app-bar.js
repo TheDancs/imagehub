@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { fade, makeStyles } from "@material-ui/core/styles";
+import { fade, makeStyles, withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -7,7 +7,16 @@ import Avatar from "@material-ui/core/Avatar";
 import Badge from "@material-ui/core/Badge";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import { useInterval } from "../utils/polling";
 import axios from "axios";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import Popover from "@material-ui/core/Popover";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CancelIcon from "@material-ui/icons/Cancel";
 
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
@@ -78,18 +87,32 @@ const useStyles = makeStyles((theme) => ({
       display: "none",
     },
   },
+  friendsReqRoot: {
+    width: "100%",
+    maxWidth: "40ch",
+    backgroundColor: theme.palette.background.paper,
+  },
+  inline: {
+    display: "inline",
+  },
+  secondaryAction: {
+    // Add some space to avoid collision as `ListItemSecondaryAction`
+    // is absolutely positioned.
+    paddingRight: 48,
+  },
 }));
 
 export const PrimarySearchAppBar = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
   const [friendRequest, setFriendRequest] = useState([]);
   const [profilePicture, setProfilePicture] = useState(null);
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [friendsAnchor, setFriendsAnchor] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const isFriendMenuOpen = Boolean(friendsAnchor);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -112,6 +135,76 @@ export const PrimarySearchAppBar = () => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handlerNotificationOpen = (event) => {
+    setFriendsAnchor(event.currentTarget);
+  };
+
+  const handlerNotificationClose = (event) => {
+    setFriendsAnchor(null);
+  };
+
+  const acceptFriendRequest = async (request) => {
+    let user = await AuthManager.getUser();
+
+    axios.defaults.headers.common["Authorization"] =
+      "Bearer " + user.access_token;
+    axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+
+    await axios({
+      method: "POST",
+      url:
+        "https://imagehub.azurewebsites.net/api/v2.0/friendrequest/accept/" +
+        request.id,
+      headers: {},
+    });
+
+    setFriendRequest(friendRequest.splice(request));
+  };
+
+  const rejectFriendRequest = async (request) => {
+    let user = await AuthManager.getUser();
+    
+    axios.defaults.headers.common["Authorization"] =
+      "Bearer " + user.access_token;
+    axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+
+    await axios({
+      method: "POST",
+      url:
+        "https://imagehub.azurewebsites.net/api/v2.0/friendrequest/reject/" +
+        request.id,
+      headers: {},
+    })
+
+    setFriendRequest(friendRequest.splice(request));
+  };
+
+  const ListItemWithWiderSecondaryAction = withStyles({
+    secondaryAction: {
+      paddingRight: 96,
+    },
+  })(ListItem);
+
+  useInterval(() => {
+    AuthManager.getUser().then((user) => {
+      setProfilePicture(user.profile.picture);
+      axios.defaults.headers.common["Authorization"] =
+        "Bearer " + user.access_token;
+      axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+      axios({
+        method: "get",
+        url: "https://imagehub.azurewebsites.net/api/v2.0/friendrequest/list",
+        headers: {},
+      })
+        .then((data) => {
+          if (data.status === 200) {
+            setFriendRequest(data.data);
+          }
+        })
+        .catch((error) => {});
+    });
+  }, 1000 * 10);
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -132,25 +225,46 @@ export const PrimarySearchAppBar = () => {
     </Menu>
   );
 
-  //fetch data
-  /*
-  AuthManager.getUser().then((user) => {
-    setProfilePicture(user.profile.picture);
-    axios.defaults.headers.common["Authorization"] =
-      "Bearer " + user.access_token;
-    axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
-    axios({
-      method: "get",
-      url: "https://imagehub.azurewebsites.net/api/v2.0/FriendRequest/list",
-      headers:{}
-    })
-      .then((data) => {
-        setFriendRequest(data);
-      })
-      .catch((error) => {
-      });
-  });
-  */
+  const id = isFriendMenuOpen ? "friends-popover" : undefined;
+  const renderFriendsRequestItems = () => {
+    return friendRequest.map((el) => {
+      return (
+        <ListItemWithWiderSecondaryAction
+          key={el.id}
+          className={classes.secondaryAction}
+          dense
+        >
+          <ListItemAvatar>
+            <Avatar src={el.from.profilePictureUrl} className={classes.small} />
+          </ListItemAvatar>
+          <ListItemText primary={el.from.name + " barátnak jelölt"} />
+          <ListItemSecondaryAction>
+            <IconButton edge="end">
+              <CheckCircleIcon onClick={() => acceptFriendRequest(el)} />
+            </IconButton>
+            <IconButton edge="end">
+              <CancelIcon onClick={() => rejectFriendRequest(el)} />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItemWithWiderSecondaryAction>
+      );
+    });
+  };
+
+  const renderFriendsRequestList = (
+    <Popover
+      id={id}
+      open={isFriendMenuOpen}
+      keepMounted
+      onClose={handlerNotificationClose}
+      className={classes.root}
+      anchorEl={friendsAnchor}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+    >
+      <List className={classes.root}>{renderFriendsRequestItems()}</List>
+    </Popover>
+  );
 
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
@@ -164,8 +278,8 @@ export const PrimarySearchAppBar = () => {
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={11} color="secondary">
+        <IconButton color="inherit">
+          <Badge badgeContent={friendRequest.length} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -178,7 +292,7 @@ export const PrimarySearchAppBar = () => {
           aria-haspopup="true"
           color="inherit"
         >
-          <Avatar src="/static/images/avatar/1.jpg" className={classes.small} />
+          <Avatar src={profilePicture} className={classes.small} />
         </IconButton>
         <p>Profile</p>
       </MenuItem>
@@ -210,8 +324,8 @@ export const PrimarySearchAppBar = () => {
               </IconButton>
             </Link>
             <IconButton color="inherit">
-              <Badge badgeContent={17} color="secondary">
-                <NotificationsIcon />
+              <Badge badgeContent={friendRequest.length} color="secondary">
+                <NotificationsIcon onClick={handlerNotificationOpen} />
               </Badge>
             </IconButton>
             <IconButton
@@ -240,6 +354,7 @@ export const PrimarySearchAppBar = () => {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      {renderFriendsRequestList}
     </div>
   );
 };
