@@ -12,7 +12,7 @@ import { Avatar, Typography } from '@material-ui/core';
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import IconButton from "@material-ui/core/IconButton";
 import { UnfoldMoreOutlined } from '@material-ui/icons';
-import Grid from '@material-ui/core/Grid';
+import { Grid, Link } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   inputRoot: {
@@ -275,7 +275,13 @@ export function SearchResult() {
        
         </Grid>
         <Grid item>
-        {friend.name}
+        <Link
+            color="inherit"
+            variant="h6"
+            href={"/Profile?" + friend.id}
+          >
+            {friend.name}
+          </Link>
         </Grid>
         <Grid container  xs={5} aligncontent="center" justifycontent="flex-end">
           <Grid item >
@@ -358,15 +364,26 @@ export function PostLikes(props){
         <div id="simple-modal-description">
           {props.likes.map((like) => {
             return (
-              <div>
-                <Avatar src={like.profilePictureUrl} />                
-                <Button variant="text">
-                {like.name}
-                </Button>
-              </div>
-            );
-          })
-          }
+              <div key={like.user.id}>
+              <Grid container spacing={3} alignitems="center" justifycontent="flex-start">
+       <Grid item   >
+       <Avatar src={like.user.profilePictureUrl} />
+      
+       </Grid>
+       <Grid item>
+       <Link
+           color="inherit"
+           variant="h6"
+           href={"/Profile?" + like.user.id}
+         >
+           {like.user.name}
+         </Link>
+       </Grid>
+     </Grid>
+           </div>
+         );
+       })
+       }
         </div>
       </div>
     );

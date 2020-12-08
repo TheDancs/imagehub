@@ -105,7 +105,7 @@ export function Profile(args) {
   else
   POSTS = (
     <>
-      <GridList cols={3.5} spacing={3} cellHeight={'100%'} className={classes.gridList}>
+      <GridList cols={3.5} spacing={3} cellHeight='100%' className={classes.gridList}>
         {posts.map((post) => {
           return (
             <div className={classes.container} key={post.id}>

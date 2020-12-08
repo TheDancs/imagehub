@@ -36,7 +36,10 @@ export default function CreatePost(args) {
       .finally(setIsLoaded(true));
   } else {
     AuthManager.getUser().then((user) => {
-      setLiked(likes.includes(user.id));
+      likes.forEach(like => {
+        if(like.user.id === user.profile.sub)
+          setLiked(true);
+      });
     });
   }
 
@@ -83,7 +86,7 @@ export default function CreatePost(args) {
           <Grid item>
             <IconButton
               aria-label="Likes"
-              onClick={() => LikePost(args.post.id, liked, setLiked)}
+              onClick={() => setLiked(LikePost(args.post.id, liked))}
             >
               <FavoriteIcon
                 fontSize="large"
@@ -100,7 +103,8 @@ export default function CreatePost(args) {
   );
 }
 
-function LikePost(id, liked, setLiked) {
+
+async function LikePost(id, liked) {
   if (id && id.toString().length > 20) {
     if (!liked) {
       var url =
@@ -111,11 +115,10 @@ function LikePost(id, liked, setLiked) {
     }
 
     if (postData(url) === 200) {
-      setLiked(!liked);
-    } else {
-      //Error page
-    }
+      ;
   }
+  return !liked;
+}
 }
 
 export function LoadingPost() {
