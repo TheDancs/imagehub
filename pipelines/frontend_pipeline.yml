@@ -23,6 +23,12 @@ steps:
 
 - task: Npm@1
   displayName: 'npm build'
+  env:
+    REACT_APP_AUTH_URL: $(AUTH_URL)
+    REACT_APP_IDENTITY_CLIENT_ID: $(CLIENT_ID)
+    REACT_APP_LOGOFF_REDIRECT_URL: $(LOGOFF_REDIRECT_URL)
+    REACT_APP_REDIRECT_URL: $(REDIRECT_URL)
+    REACT_APP_SILENT_REDIRECT_URL: $(SILENT_REDIRECT_URL)
   inputs:
     workingDir: 'image-hub-frontend'
     command: custom
