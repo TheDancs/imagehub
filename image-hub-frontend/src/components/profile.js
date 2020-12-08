@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import { ShowError, ShowInfo } from "./alert";
 import { AuthManager } from "../providers/authProvider";
 import CreatePerosnalPost, { LoadingPost,  } from "./post";
+import FriendRequestButton from "./friendRequestButton";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -151,14 +152,7 @@ export function ProfileSummary(user_id) {
   }
   else {
     if (userSummary != null) {
-      //Ha a barátunk
-      if (userSummary.isFriend) {
-        rqButton = (<Button onClick={() => Unfriend()} >Delete friend</Button>);
-      }
-      //ha nem a barátunk
-      else {
-        rqButton = (<Button onClick={() => SendFriendRequest()} >Send Friendrequest</Button>);
-      }
+        rqButton = (<FriendRequestButton userId={user_id} statusCode={userSummary.friendStatus} />);
     }
   }
     //Ha még nem próbáltuk betölteni
@@ -228,15 +222,7 @@ export function ProfileSummary(user_id) {
   }
 
   //@TODO: Ezeket a linkeket megírni.
- export async function Unfriend(id) {
-    var url = "https://imagehub.azurewebsites.net/api/v2.0/User/"+id+"/unfriend";
-    await postData(url);
-  }
-
- export async function SendFriendRequest(id) {
-    var url = "https://imagehub.azurewebsites.net/api/v2.0/FriendRequest/send/"+id;
-    await postData(url);
-  }
+ 
 
   export function GetUserPosts(userid) {
     var feedUrl = "https://imagehub.azurewebsites.net/api/v2.0/Feed/user/" + userid;
