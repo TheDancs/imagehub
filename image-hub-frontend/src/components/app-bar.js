@@ -1,15 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import InputBase from "@material-ui/core/InputBase";
+import Avatar from "@material-ui/core/Avatar";
 import Badge from "@material-ui/core/Badge";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import axios from "axios";
 
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import { Link } from "react-router-dom";
@@ -19,7 +18,6 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 
 import { SearchResult } from "./modals";
 import { AuthManager } from "../providers/authProvider";
-
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -33,6 +31,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       display: "block",
     },
+  },
+  small: {
+    width: theme.spacing(3),
+    height: theme.spacing(3),
   },
   search: {
     position: "relative",
@@ -79,6 +81,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function PrimarySearchAppBar(props) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [friendRequest, setFriendRequest] = useState([]);
+  const [profilePicture, setProfilePicture] = useState(null);
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -101,7 +106,7 @@ export default function PrimarySearchAppBar(props) {
 
   const handleLogout = () => {
     AuthManager.logout();
-  }
+  };
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
@@ -122,12 +127,30 @@ export default function PrimarySearchAppBar(props) {
         <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       </Link>
       <Link to="#">
-        <MenuItem onClick={handleLogout}>
-          Kijelentkezés
-        </MenuItem>
+        <MenuItem onClick={handleLogout}>Kijelentkezés</MenuItem>
       </Link>
     </Menu>
   );
+
+  //fetch data
+  /*
+  AuthManager.getUser().then((user) => {
+    setProfilePicture(user.profile.picture);
+    axios.defaults.headers.common["Authorization"] =
+      "Bearer " + user.access_token;
+    axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+    axios({
+      method: "get",
+      url: "https://imagehub.azurewebsites.net/api/v2.0/FriendRequest/list",
+      headers:{}
+    })
+      .then((data) => {
+        setFriendRequest(data);
+      })
+      .catch((error) => {
+      });
+  });
+  */
 
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
@@ -140,14 +163,6 @@ export default function PrimarySearchAppBar(props) {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
       <MenuItem>
         <IconButton aria-label="show 11 new notifications" color="inherit">
           <Badge badgeContent={11} color="secondary">
@@ -163,7 +178,7 @@ export default function PrimarySearchAppBar(props) {
           aria-haspopup="true"
           color="inherit"
         >
-          <AccountCircle />
+          <Avatar src="/static/images/avatar/1.jpg" className={classes.small} />
         </IconButton>
         <p>Profile</p>
       </MenuItem>
@@ -171,69 +186,63 @@ export default function PrimarySearchAppBar(props) {
   );
 
   return (
-      <div className={classes.grow}>
-        <AppBar position="fixed">
-          <Toolbar>
-            <div className={classes.title}>
-              <Link to="/">
-                <img src={logo} height="40px" alt="" />
-              </Link>
-            </div>
-            <div className={classes.search}>
-              <SearchResult />
-            </div>
-            <div className={classes.grow} />
-            <div className={classes.sectionDesktop}>
-              <Link to="/feed">
-                <IconButton aria-label="" color="inherit">
-                  <DashboardIcon />
-                </IconButton>
-              </Link>
-              <Link to="/upload">
-                <IconButton aria-label="" color="inherit">
-                  <PublishIcon />
-                </IconButton>
-              </Link>
-
-              <IconButton aria-label="show 4 new mails" color="inherit">
-                <Badge badgeContent={4} color="secondary">
-                  <MailIcon />
-                </Badge>
+    <div className={classes.grow}>
+      <AppBar position="fixed">
+        <Toolbar>
+          <div className={classes.title}>
+            <Link to="/">
+              <img src={logo} height="40px" alt="" />
+            </Link>
+          </div>
+          <div className={classes.search}>
+            <SearchResult />
+          </div>
+          <div className={classes.grow} />
+          <div className={classes.sectionDesktop}>
+            <Link to="/feed">
+              <IconButton aria-label="" color="inherit">
+                <DashboardIcon />
               </IconButton>
-              <IconButton
-                aria-label="show 17 new notifications"
-                color="inherit"
-              >
-                <Badge badgeContent={17} color="secondary">
-                  <NotificationsIcon />
-                </Badge>
+            </Link>
+            <Link to="/upload">
+              <IconButton aria-label="" color="inherit">
+                <PublishIcon />
               </IconButton>
-              <IconButton
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-            </div>
-            <div className={classes.sectionMobile}>
-              <IconButton
-                aria-label="show more"
-                aria-controls={mobileMenuId}
-                aria-haspopup="true"
-                onClick={handleMobileMenuOpen}
-                color="inherit"
-              >
-                <MoreIcon />
-              </IconButton>
-            </div>
-          </Toolbar>
-        </AppBar>
-        {renderMobileMenu}
-        {renderMenu}
-      </div>
+            </Link>
+            <IconButton color="inherit">
+              <Badge badgeContent={17} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="inherit"
+            >
+              <Avatar
+                src={profilePicture}
+                className={classes.small}
+              />
+            </IconButton>
+          </div>
+          <div className={classes.sectionMobile}>
+            <IconButton
+              aria-label="show more"
+              aria-controls={mobileMenuId}
+              aria-haspopup="true"
+              onClick={handleMobileMenuOpen}
+              color="inherit"
+            >
+              <MoreIcon />
+            </IconButton>
+          </div>
+        </Toolbar>
+      </AppBar>
+      {renderMobileMenu}
+      {renderMenu}
+    </div>
   );
 }
