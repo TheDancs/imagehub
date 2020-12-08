@@ -99,14 +99,14 @@ namespace ImageHubService.V2.Controllers
         /// </summary>
         /// <returns>Returns list of friends</returns>
         /// <response code="200">Returns list of users</response>
-        [HttpGet("friends")]
+        [HttpGet("{userId}/friends")]
         [ProducesResponseType(typeof(UserSummaryModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetFriends()
+        public async Task<IActionResult> GetFriends(string userId)
         {
             var user = this.GetUserId();
 
-            var result = await mediator.Send(new GetFriendsQuery(user));
+            var result = await mediator.Send(new GetFriendsQuery(userId == "me" ? user : userId));
             if (result == null)
             {
                 return NotFound();

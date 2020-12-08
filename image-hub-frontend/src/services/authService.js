@@ -61,7 +61,6 @@ export default class AuthService {
     if (!user) {
       return await this.UserManager.signinRedirectCallback();
     }
-    console.log(user.access_token);
     return user;
   };
 
