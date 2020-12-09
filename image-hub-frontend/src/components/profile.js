@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import RecipeReviewCard from "./post";
 import Paper from '@material-ui/core/Paper';
 import GridList from '@material-ui/core/GridList';
 import { FriendRequests, ViewFriends } from "./modals";
@@ -133,22 +131,32 @@ export function Profile(args) {
 
 export function ProfileSummary(user_id) {
   const url = "https://imagehub.azurewebsites.net/api/v2.0/User/" + user_id;
-
+  const reqUrl ="https://imagehub.azurewebsites.net/api/v2.0/FriendRequest/list";
   const classes = useStyles();
 
   const [userSummary, setUserSummary] = useState(null);
+  const [requs, setRequs] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(null);
   const [myId, setMyId] = useState(null);
 
+  async function GetFriendRequests() {
+    if(!error)
+    await FetchUrl(reqUrl)
+        .then(re => setRequs(re))
+        .catch(err => setError(err))
+}
+
   if(myId == null)
-  AuthManager.getUser().then(i => setMyId(i.profile.sub)).catch(er => setError(er))
+    AuthManager.getUser().then(i => setMyId(i.profile.sub)).catch(er => setError(er))
 
   var rqButton;
 
   //Ha a saját profilunk kell.
   if (user_id === "me" || user_id === myId) {
-    rqButton = (<><FriendRequests /></>);
+    if(requs == null)
+      GetFriendRequests();
+    rqButton = (<><FriendRequests requs={requs} /></>);
   }
   else {
     if (userSummary != null) {
