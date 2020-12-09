@@ -150,7 +150,7 @@ export function FriendRequests(props) {
     body = (
       <div>
         <Typography variant="h5" id="simple-modal-title">Friend requests</Typography>
-        {ShowInfo("No friend requests", "Nobody wants to be friends with you")}
+        {ShowInfo("No friend requests", "Nobody want to be friends with you")}
       </div>
     );
   }
@@ -293,7 +293,7 @@ export function PostLikes(props){
   if (props.likes && props.likes.length > 0) {
     body = (
       <div>
-       <Typography variant="h5" id="simple-modal-title">Friends</Typography>
+       <Typography variant="h5" id="simple-modal-title">People who liked</Typography>
       <List dense>
           {props.likes.map((like) => {
             return (
@@ -312,7 +312,7 @@ export function PostLikes(props){
       <div>
          <Typography variant="h5" id="simple-modal-title">Friends</Typography>
         <div id="simple-modal-description">
-          {ShowInfo("No likes", "Nobody likes this.")}
+          {ShowInfo("No likes", "Nobody like this.")}
         </div>
       </div>);
   }
