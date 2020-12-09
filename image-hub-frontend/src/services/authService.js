@@ -5,7 +5,6 @@ export default class AuthService {
   UserManager;
 
   constructor() {
-    console.log(process.env);
     this.UserManager = new UserManager({
       authority: process.env.REACT_APP_AUTH_URL,
       client_id: "image_hub_client",

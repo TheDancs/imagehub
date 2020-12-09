@@ -4,16 +4,12 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
 import { fade, makeStyles } from '@material-ui/core/styles';
-import SearchIcon from '@material-ui/icons/Search';
-import TextField from '@material-ui/core/TextField';
 import { FetchUrl, postData,} from './profile';
-import { ShowError, ShowInfo } from './alert';
-import { Avatar, Typography } from '@material-ui/core';
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import IconButton from "@material-ui/core/IconButton";
-import { UnfoldMoreOutlined } from '@material-ui/icons';
-import { Grid, Link } from "@material-ui/core";
-import FriendRequestButton from "./friendRequestButton";
+import { ShowError, ShowInfo, ShowSuccess } from './alert';
+import { Typography } from '@material-ui/core';
+import { FriendRequestResultCard, ListResultCard, LoadingResultCards } from './ResultCards';
+import List from '@material-ui/core/List';
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles((theme) => ({
   inputRoot: {
@@ -57,8 +53,6 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
     width: "400px"
   },
@@ -69,16 +63,57 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function AcceptRequest(id) {
-  postData("https://imagehub.azurewebsites.net/api/v2.0/User/friendrequests/" + { id } + "/accept");
+async function AcceptRequest(id) {
+  var res = await postData("https://imagehub.azurewebsites.net/api/v2.0/friendrequest/accept/"+id);
+  return res;
 }
-function RejectRequest(id) {
-  postData("https://imagehub.azurewebsites.net/api/v2.0/User/friendrequests/" + { id } + "/reject");
+async function RejectRequest(id) {
+  var res = await postData("https://imagehub.azurewebsites.net/api/v2.0/FriendRequest/reject/"+id);
+  return res;
 }
 
-export function FriendRequests(requs = []) {
+export function FriendRequests(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [reqs, setRequs] = useState(props.requs);
+
+
+  async function handleRequest(id, accept){
+    if(accept && await AcceptRequest(id)===200)
+    {
+      var i= 0;
+      if(reqs.length > 1)
+        while (i <reqs.length) {
+          if (reqs[i].id === id) {
+            setRequs(reqs.splice(i, 1));
+          } else {
+            ++i;
+          }
+        }
+      else
+      await setRequs([]);
+      await setMessage(ShowSuccess("Congrats!", "you got a new friend"));
+    }
+    else if(!accept &&  await RejectRequest(id) === 200)
+    {
+      var i=0;
+      if(reqs.length > 1)
+        while (i <reqs.length) {
+          if (reqs[i].id === id) {
+            setRequs(reqs.splice(i, 1));
+          } else {
+            ++i;
+          }
+        }
+      else
+      await setRequs([]);
+      await setMessage(null);
+    }
+    else{
+      setMessage(ShowError("Ooops","something went wrong"));
+    }
+  }
 
   const handleOpen = () => {
     setOpen(true);
@@ -86,37 +121,36 @@ export function FriendRequests(requs = []) {
 
   const handleClose = () => {
     setOpen(false);
+    setMessage(null);
   };
 
   var body;
   var buttonText = "Friend Requests"
 
-  if (requs && requs.length > 0) {
-    buttonText = "Friend Requests (" + requs.length + ")";
+  if (reqs && reqs.length > 0) {
+    buttonText = "Friend Requests (" + reqs.length + ")";
     body = (
       <div>
-        <h2 id="simple-modal-title">Friend requests</h2>
-        <div id="simple-modal-description">
-          {requs.map((req) => {
+        <Typography variant="h5" id="simple-modal-title">Friend requests</Typography>
+        {message}
+        <List dense className={classes.root}>
+          {reqs.map((req) => {
             return (
-              <div>
-                <Avatar src={req.userSummary.profilePicture} />
-                <div>{req.userSummary.name}</div>
-                <Button variant="contained" onClick={AcceptRequest(req.id)}>Accept</Button>
-                <Button variant="outlined" onClick={RejectRequest(req.id)}>Reject</Button>
-              </div>
+              <div key={req.id}>
+                            <FriendRequestResultCard user={req.from} reqId={req.id} handle={handleRequest}/>
+                        </div>
             );
           })
           }
-        </div>
+        </List>
       </div>
     );
   }
   else {
     body = (
       <div>
-        <h2 id="simple-modal-title">Friend requests</h2>
-        {ShowInfo("No friend requests", "Nobody wants to be friends with you")}
+        <Typography variant="h5" id="simple-modal-title">Friend requests</Typography>
+        {ShowInfo("No friend requests", "Nobody want to be friends with you")}
       </div>
     );
   }
@@ -160,18 +194,22 @@ export function ViewFriends(args) {
   const [error, setError] = useState(null)
 
   //Fetch friends
-  if(!isLoaded)
-    FetchUrl(url)
+  async function GetFriends() {
+    await FetchUrl(url)
     .then(re => setFriends(re))
     .catch(er => setError(er))
     .finally(()=> setIsLoaded(true));
+}
+  if(!isLoaded)
+    GetFriends();
 
-  const handleOpen = () => {
+  function handleOpen() {
     setOpen(true);
-  };
+    setIsLoaded(false);
+  }
 
   const handleClose = () => {
-    setOpen(false);
+    setOpen(false);    
   };
 
   var body;
@@ -179,55 +217,35 @@ export function ViewFriends(args) {
 if(error || !friends || friends.length<=0) 
 {
   if(error)
-    body = (<>
-      {ShowError("Couldn't load list", error.message)}
-      </>
-    );
+    body = (<>{ShowError("Couldn't load list", error.message)}</>);
   else
-    body = (<>
-    {ShowInfo("No friends", "You don't have any friends.")}
-    </>
-    );
+    body = (<> {ShowInfo("No friends", "You don't have any friends.")}</>);
 }
 else if(!isLoaded)
 {
-  body = "Loading..."; 
+  body = (
+    <div>
+      <LoadingResultCards />
+      <LoadingResultCards />
+      <LoadingResultCards />
+      <LoadingResultCards />
+      <LoadingResultCards /> 
+    </div>
+    );
 }
 else{
   body = (
     <div>
-      <h2 id="simple-modal-title">Friends</h2>
-      <div id="simple-modal-description">
+      <Typography variant="h5" id="simple-modal-title">Friends</Typography>
+      <List dense>
         {friends.map((friend) => {
-         return (
+         return (                        
           <div key={friend.id}>
-             <Grid container spacing={3} xs={12} alignitems="center" justifycontent="flex-start">
-      <Grid item   >
-      <Avatar src={friend.profilePictureUrl} />
-     
-      </Grid>
-      <Grid item>
-      <Link
-          color="inherit"
-          variant="h6"
-          href={"/Profile?" + friend.id}
-        >
-          {friend.name}
-        </Link>
-      </Grid>
-      <Grid container  xs={5} aligncontent="center" justifycontent="flex-end">
-        <Grid item >
-            <FriendRequestButton userId={friend.id} statusCode={friend.friendStatus} />
-        </Grid>
-      
-      </Grid>
-    </Grid>
+              <ListResultCard user={friend}/>
           </div>
-        );
-      })
-        })
-        
-      </div>
+          );
+        })}        
+      </List>
     </div>
   );
 }
@@ -250,131 +268,14 @@ else{
         }}
       >
         <Fade in={open}>
-          <div className={vf_classes.paper}>
+          <Paper elevation={4} className={vf_classes.paper}>
             {body}
-          </div>
+          </Paper>
         </Fade>
       </Modal>
     </div>
   );
 }
-export function Search(toFind) {
-  console.log("searched to " + toFind);
-}
-
-export function SearchResult() {
-  const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const [search_value, setSearchValue] = useState("");
-  const [search_result, setSearchResult] = useState([]);
-  const [isLoaded, setIsloaded] = useState(false);
-  const [url, setUrl] = useState("https://imagehub.azurewebsites.net/api/v2.0/User/search/");
-
-
-  const handleOpen = (event) => {
-    var search_bar = document.getElementById("search_bar");
-    if (event.key === "Enter") {
-            setSearchValue(search_bar.value);
-
-      setUrl("https://imagehub.azurewebsites.net/api/v2.0/User/search/" + search_bar.value);
-
-      if(!isLoaded)
-      FetchUrl(url).then(result => setSearchResult(result))
-      .catch(error => console.log(error))
-      .finally(() => {setIsloaded(true);setOpen(true);});
-    }
-
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setIsloaded(false);
-  };
-
-  var content;
-  if(isLoaded && search_result.length===0)
-    content = ShowInfo("Result", "No result for '" + search_value + "'");
-
-  else if (!isLoaded)
-    content = "Loading...";
-  else
-    content = (
-      <>
-        {search_result.map((friend) => {
-          return (
-            <div key={friend.id}>
-               <Grid container spacing={3} xs={12} alignitems="center" justifycontent="flex-start">
-        <Grid item   >
-        <Avatar src={friend.profilePictureUrl} />
-       
-        </Grid>
-        <Grid item>
-        <Link
-            color="inherit"
-            variant="h6"
-            href={"/Profile?" + friend.id}
-          >
-            {friend.name}
-          </Link>
-        </Grid>
-        <Grid container  xs={5} aligncontent="center" justifycontent="flex-end">
-          <Grid item >
-            <FriendRequestButton userId={friend.id} statusCode={friend.friendStatus}/>
-          </Grid>
-        
-        </Grid>
-      </Grid>
-            </div>
-          );
-        })
-        }
-      </>
-    );
-  return (
-    <div>
-      <div className={classes.searchIcon}>
-        <SearchIcon />
-      </div>
-      <TextField onKeyUp={handleOpen}
-
-        id="search_bar"
-        placeholder="Search…"
-        classes={{
-          root: classes.inputRoot,
-          input: classes.inputInput,
-        }}
-        inputProps={{ 'aria-label': 'search' }}
-      />
-
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        className={classes.Modal}
-        open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={open}>
-          <div className={classes.paper}>
-            <div>
-              <h2 id="simple-modal-title">Search result to "{search_value}"</h2>
-              <div className={classes.btns}>
-                {content}
-
-              </div>
-            </div>
-          </div>
-        </Fade>
-      </Modal>
-    </div>
-  );
-}
-
-
 
 export function PostLikes(props){
   
@@ -392,40 +293,26 @@ export function PostLikes(props){
   if (props.likes && props.likes.length > 0) {
     body = (
       <div>
-        <h2 id="simple-modal-title">People who liked</h2>
-        <div id="simple-modal-description">
+       <Typography variant="h5" id="simple-modal-title">People who liked</Typography>
+      <List dense>
           {props.likes.map((like) => {
             return (
               <div key={like.user.id}>
-              <Grid container spacing={3} alignitems="center" justifycontent="flex-start">
-       <Grid item   >
-       <Avatar src={like.user.profilePictureUrl} />
-      
-       </Grid>
-       <Grid item>
-       <Link
-           color="inherit"
-           variant="h6"
-           href={"/Profile?" + like.user.id}
-         >
-           {like.user.name}
-         </Link>
-       </Grid>
-     </Grid>
+              <ListResultCard user={like.user}/>
            </div>
          );
        })
        }
-        </div>
+        </List>
       </div>
     );
   }
   else {
     body = (
       <div>
-        <h2 id="simple-modal-title">People who liked</h2>
+         <Typography variant="h5" id="simple-modal-title">Friends</Typography>
         <div id="simple-modal-description">
-          {ShowInfo("No likes", "Nobody likes this.")}
+          {ShowInfo("No likes", "Nobody like this.")}
         </div>
       </div>);
   }

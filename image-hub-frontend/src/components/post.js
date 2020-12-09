@@ -65,7 +65,6 @@ export default function CreatePost(args) {
         />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          Uploaded:  
           {new Intl.DateTimeFormat("hu-HU", {
             year: "numeric",
             month: "long",

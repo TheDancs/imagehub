@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import RecipeReviewCard from "./post";
 import Paper from '@material-ui/core/Paper';
 import GridList from '@material-ui/core/GridList';
 import { FriendRequests, ViewFriends } from "./modals";
@@ -13,7 +11,7 @@ import { ShowError, ShowInfo } from "./alert";
 import { AuthManager } from "../providers/authProvider";
 import CreatePerosnalPost, { LoadingPost,  } from "./post";
 import FriendRequestButton from "./friendRequestButton";
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -96,13 +94,16 @@ export function Profile(args) {
   //ez html formátumban a feed, vagy ha nincs mit betölteni, akkor egy hibaüzenet.
   var POSTS;
   var PROFILESUMMARY = ProfileSummary(id);
-
-  if(error || !posts || posts.length === 0)
+  if(!isLoaded)
+    POSTS =  (<Paper elevation={0} className="paper--profile" variant="elevation">
+    <Grid container spacing={5} justify="center" alignContent="center">
+     <CircularProgress color="secondary" />
+     </Grid>
+     </Paper>);
+  else if(error || !posts || posts.length === 0)
   {
     POSTS = (<> <div margin="20px"> {ShowInfo("No posts to show", "This user has not upload any post yet.")}</div> </>);
-  }
-  else if(!isLoaded)
-    POSTS = "Loading.";
+  }  
   else
   POSTS = (
     <>
@@ -133,22 +134,32 @@ export function Profile(args) {
 
 export function ProfileSummary(user_id) {
   const url = "https://imagehub.azurewebsites.net/api/v2.0/User/" + user_id;
-
+  const reqUrl ="https://imagehub.azurewebsites.net/api/v2.0/FriendRequest/list";
   const classes = useStyles();
 
   const [userSummary, setUserSummary] = useState(null);
+  const [requs, setRequs] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(null);
   const [myId, setMyId] = useState(null);
 
+  async function GetFriendRequests() {
+    if(!error)
+    await FetchUrl(reqUrl)
+        .then(re => setRequs(re))
+        .catch(err => setError(err))
+}
+
   if(myId == null)
-  AuthManager.getUser().then(i => setMyId(i.profile.sub)).catch(er => setError(er))
+    AuthManager.getUser().then(i => setMyId(i.profile.sub)).catch(er => setError(er))
 
   var rqButton;
 
   //Ha a saját profilunk kell.
   if (user_id === "me" || user_id === myId) {
-    rqButton = (<><FriendRequests /></>);
+    if(requs == null)
+      GetFriendRequests();
+    rqButton = (<><FriendRequests requs={requs} /></>);
   }
   else {
     if (userSummary != null) {
@@ -163,7 +174,7 @@ export function ProfileSummary(user_id) {
         .finally(() => setIsLoaded(true));
 
     //Ha valami hiba van, és nem sikerült a profilt betölteni.
-    if (error || userSummary == null) {
+    if (error) {
       return (
         <div className="main--content">
           <div className={classes.container}>
@@ -173,7 +184,17 @@ export function ProfileSummary(user_id) {
       );
     }
     else if (!isLoaded) {
-      //Talán később egy skeletont csinálhatnánk hozzá
+      
+      return (
+        <div className="main--content">
+         <Paper elevation={0} className="paper--profile" variant="elevation">
+         <Grid container spacing={5} justify="center" alignContent="center">
+          <CircularProgress color="secondary" />
+          </Grid>
+          </Paper>
+      
+      </div>
+      );
     }
     //Ha betöltöttük 
     else {
