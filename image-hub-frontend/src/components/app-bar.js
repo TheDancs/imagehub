@@ -25,7 +25,7 @@ import logo from "../assets/images/menu-logo.png";
 import PublishIcon from "@material-ui/icons/Publish";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 
-import { SearchResult } from "./modals";
+import SearchBar from "./searchBar";
 import { AuthManager } from "../providers/authProvider";
 
 const useStyles = makeStyles((theme) => ({
@@ -309,7 +309,7 @@ export const PrimarySearchAppBar = () => {
             </Link>
           </div>
           <div className={classes.search}>
-            <SearchResult />
+            <SearchBar/>
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
