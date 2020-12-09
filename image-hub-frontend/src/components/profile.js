@@ -11,7 +11,7 @@ import { ShowError, ShowInfo } from "./alert";
 import { AuthManager } from "../providers/authProvider";
 import CreatePerosnalPost, { LoadingPost,  } from "./post";
 import FriendRequestButton from "./friendRequestButton";
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -94,13 +94,16 @@ export function Profile(args) {
   //ez html formátumban a feed, vagy ha nincs mit betölteni, akkor egy hibaüzenet.
   var POSTS;
   var PROFILESUMMARY = ProfileSummary(id);
-
-  if(error || !posts || posts.length === 0)
+  if(!isLoaded)
+    POSTS =  (<Paper elevation={0} className="paper--profile" variant="elevation">
+    <Grid container spacing={5} justify="center" alignContent="center">
+     <CircularProgress color="secondary" />
+     </Grid>
+     </Paper>);
+  else if(error || !posts || posts.length === 0)
   {
     POSTS = (<> <div margin="20px"> {ShowInfo("No posts to show", "This user has not upload any post yet.")}</div> </>);
-  }
-  else if(!isLoaded)
-    POSTS = "Loading.";
+  }  
   else
   POSTS = (
     <>
@@ -171,7 +174,7 @@ export function ProfileSummary(user_id) {
         .finally(() => setIsLoaded(true));
 
     //Ha valami hiba van, és nem sikerült a profilt betölteni.
-    if (error || userSummary == null) {
+    if (error) {
       return (
         <div className="main--content">
           <div className={classes.container}>
@@ -181,7 +184,17 @@ export function ProfileSummary(user_id) {
       );
     }
     else if (!isLoaded) {
-      //Talán később egy skeletont csinálhatnánk hozzá
+      
+      return (
+        <div className="main--content">
+         <Paper elevation={0} className="paper--profile" variant="elevation">
+         <Grid container spacing={5} justify="center" alignContent="center">
+          <CircularProgress color="secondary" />
+          </Grid>
+          </Paper>
+      
+      </div>
+      );
     }
     //Ha betöltöttük 
     else {
